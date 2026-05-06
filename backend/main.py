@@ -1,15 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from services.molecule_info import get_composition, get_molar_mass, get_mass_percent, convert_mass_mole
+from backend.services.molecule_info import get_composition, get_molar_mass, get_mass_percent, convert_mass_mole
 
-from services.reaction_info import get_lim_compound
+from backend.services.equation_info import equation_to_dicts, get_limiting_ratios, get_limiting_reactant, get_theoretical_yields
 
 app = FastAPI(title="Mole-Cule API", description = "This is the API used for the tool Mole-Cule.")
 
 class LimitingFactor(BaseModel):
     equation: str
-    reactants: dict
+    reactants_mol: dict
 
 
 
@@ -56,17 +56,25 @@ def convert(formula: str = "", mass: float = 0.0, mol: float = 0.0):
         }
 
     else:
-        raise HTTPException(status_code = 422, detail = "Provide formula and either mass or moles")
+        raise HTTPException(status_code = 422, detail = "Provide formula and either mass or mol")
     
 
 @app.post("/limiting")
 def limiting(data: LimitingFactor):
-    equation = data.equation.replace(" ", "")
-    reactants = data.reactants
-    limiting_reactant = get_lim_compound(equation, reactants)
+    equation = data.equation
+    reactants_mol = data.reactants_mol
 
-    return{
-        "limiting_reactant": limiting_reactant
+    reactants, products = equation_to_dicts(equation)
+
+    limiting_ratios = get_limiting_ratios(reactants, reactants_mol)
+
+    limiting_reactant = get_limiting_reactant(limiting_ratios)
+
+    theoretical_yields = get_theoretical_yields(limiting_reactant, reactants, products, reactants_mol)
+
+    return {
+        "limiting_reactant": limiting_reactant,
+        "theoretical_yields": theoretical_yields
     }
 
 

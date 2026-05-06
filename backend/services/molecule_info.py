@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from data.elements import elements
+from backend.data.elements import elements
 
 def get_composition(formula):
     if formula:
