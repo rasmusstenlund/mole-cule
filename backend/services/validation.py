@@ -2,7 +2,7 @@ from fastapi import HTTPException
 
 from data.elements import elements_list
 
-from molecule_info import get_composition
+from services.molecule_info import get_composition
 
 def validate_element(element: str):
     if not element:

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 
 from data.elements import elements_list
-from validation import validate_element, validate_compound
+
 
 
 def get_composition(formula):
@@ -104,14 +104,14 @@ def get_molar_mass(composition):
 
     for element, amount in  composition.items():
 
-        total_mass += elements_list[element] * amount
+        total_mass += elements_list[element]["atomic_mass"] * amount
 
     return total_mass
 
 def get_mass_percent(total_mass, composition):
     mass_fractions = {}
     for element, ammount in composition.items():
-        element_mass = elements_list[element] * ammount
+        element_mass = elements_list[element]["atomic_mass"] * ammount
         fraction = element_mass / total_mass
         mass_fractions[element] = fraction
     
