@@ -1,5 +1,7 @@
 from fastapi import HTTPException
 
+import re
+
 from data.elements import elements_list
 
 
@@ -7,97 +9,81 @@ from data.elements import elements_list
 def get_composition(formula):
     if formula:
         composition = [{}]
-        current_element = ""
-        amount_str = ""
 
 
-        def add_element(element, amount):
-            if amount == "":
-                amount_int = 1
-            else:
-                amount_int = int(amount)
+        items = re.findall("[A-Z][a-z]*|\d+|\(|\)", formula)
 
-            if element not in composition[-1]:
-                composition[-1][element] = amount_int
-            
-            else:
-                composition[-1][element] += amount_int
-         
+        unknown = re.sub("[A-Z][a-z]*|\d+|\(|\)", "", formula)
+        if unknown != "":
+            raise HTTPException(
+                status_code = 422,
+                detail = f"Unknown characters: {unknown}"
+            )
         
         i = 0
-        while i < len(formula):
-            if formula[i] == "(":
-                if current_element != "":
-                    add_element(current_element, amount_str)
-                    current_element = ""
-                    amount_str = ""
+        while i < len(items):
 
+            if items[i] == "(":
                 composition.append({})
 
-                i += 1
-                
+                i +=1
                 continue
-            
-            elif formula[i] == ")":
-                if current_element != "":
-                    add_element(current_element, amount_str)
-                    current_element = ""
-                    amount_str = ""
-                    
+            elif items[i] == ")":
 
-                combo = composition.pop()
+                if len(composition) == 1:
+                    raise HTTPException(
+                        status_code = 422,
+                        detail = "Too many ')'"
+                    )
+                
+                group = composition.pop()
 
-                i += 1
-                multiplier_str = ""
-                while i < len(formula) and formula[i].isdigit():
-                    multiplier_str += formula[i]
+                multiplier = 1
+
+                if i + 1 < len(items) and items[i + 1].isdigit():
+                    multiplier = int(items[i + 1])
                     i += 1
-
-                multiplier =  int(multiplier_str) if multiplier_str else 1
-                for element, amount in combo.items():
-                    amount = str(int(amount) * multiplier)
-                    add_element(element, amount)
-
-
-                continue
-            elif formula[i].isupper():
-                if current_element != "":
-                    add_element(current_element, amount_str)
-                    amount_str = ""
-                    
-                current_element = formula[i]
-                i += 1
-
-                continue
-            elif formula[i].islower():
                 
-                current_element += formula[i]
-                i += 1
+                for element, count in group.items():
+                    count = int(count)
 
-                continue
-            elif formula[i].isdigit():
-                
-                if current_element != "":
-                    amount_str += formula[i]
-                else:
-                    raise HTTPException(status_code = 400, detail="Invalid formula: Digit before any element")
-                
-                i += 1
+                    composition[-1][element] = composition[-1].get(element, 0) + (count * multiplier) 
 
+                i += 1
                 continue
+
+            elif items[i].isdigit():
+                raise HTTPException(
+                    status_code = 422,
+                    detail = "Number unassigned to group or element"
+                )
+            
 
             else:
-                raise HTTPException(status_code=400, detail= f"Invalid character: {formula[i]}")
-        
+                element = items[i]
 
-        if current_element != "":
-            add_element(current_element, amount_str)
-            amount_str = ""
+                count = 1
+
+                if i + 1 < len(items) and items[i + 1].isdigit():
+                    count = int(items[i + 1])
+                    i += 1
+
+                composition[-1][element] = composition[-1].get(element, 0) + count
+
+                i += 1
+                continue
+        
+        if len(composition) != 1:
+            raise HTTPException(
+                status_code = 422,
+                detail = "Unclosed parenthesis"
+            )
 
         return composition[0]
     
     else:
         raise HTTPException(status_code=422, detail= "No formula provided")
+
 
 def get_molar_mass(composition):
     total_mass = 0.0
@@ -110,8 +96,10 @@ def get_molar_mass(composition):
 
 def get_mass_percent(total_mass, composition):
     mass_fractions = {}
-    for element, ammount in composition.items():
-        element_mass = elements_list[element]["atomic_mass"] * ammount
+    for element, amount in composition.items():
+
+        element_mass = elements_list[element]["atomic_mass"] * amount
+
         fraction = element_mass / total_mass
         mass_fractions[element] = fraction
     
