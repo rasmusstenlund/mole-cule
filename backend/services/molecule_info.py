@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 
-from backend.data.elements import elements
+from data.elements import elements_list
+from validation import validate_element, validate_compound
+
 
 def get_composition(formula):
     if formula:
@@ -26,12 +28,9 @@ def get_composition(formula):
         while i < len(formula):
             if formula[i] == "(":
                 if current_element != "":
-                    if current_element in elements:
-                        add_element(current_element, amount_str)
-                        current_element = ""
-                        amount_str = ""
-                    else:
-                        raise HTTPException(status_code=400, detail= f"Invalid element: {current_element}")
+                    add_element(current_element, amount_str)
+                    current_element = ""
+                    amount_str = ""
 
                 composition.append({})
 
@@ -41,12 +40,10 @@ def get_composition(formula):
             
             elif formula[i] == ")":
                 if current_element != "":
-                    if current_element in elements:
-                        add_element(current_element, amount_str)
-                        current_element = ""
-                        amount_str = ""
-                    else:
-                        raise HTTPException(status_code=400, detail= f"Invalid element: {current_element}")
+                    add_element(current_element, amount_str)
+                    current_element = ""
+                    amount_str = ""
+                    
 
                 combo = composition.pop()
 
@@ -65,11 +62,9 @@ def get_composition(formula):
                 continue
             elif formula[i].isupper():
                 if current_element != "":
-                    if current_element in elements:
-                        add_element(current_element, amount_str)
-                        amount_str = ""
-                    else:
-                        raise HTTPException(status_code=400, detail= f"Invalid element: {current_element}")
+                    add_element(current_element, amount_str)
+                    amount_str = ""
+                    
                 current_element = formula[i]
                 i += 1
 
@@ -94,7 +89,6 @@ def get_composition(formula):
             else:
                 raise HTTPException(status_code=400, detail= f"Invalid character: {formula[i]}")
         
-    
 
         if current_element != "":
             add_element(current_element, amount_str)
@@ -110,14 +104,14 @@ def get_molar_mass(composition):
 
     for element, amount in  composition.items():
 
-        total_mass += elements[element] * amount
+        total_mass += elements_list[element] * amount
 
     return total_mass
 
 def get_mass_percent(total_mass, composition):
     mass_fractions = {}
     for element, ammount in composition.items():
-        element_mass = elements[element] * ammount
+        element_mass = elements_list[element] * ammount
         fraction = element_mass / total_mass
         mass_fractions[element] = fraction
     

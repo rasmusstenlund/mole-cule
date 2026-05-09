@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from backend.services.molecule_info import get_composition, get_molar_mass, get_mass_percent, convert_mass_mole
+from services.molecule_info import get_composition, get_molar_mass, get_mass_percent, convert_mass_mole
 
-from backend.services.equation_info import equation_to_dicts, get_limiting_ratios, get_limiting_reactant, get_theoretical_yields
+from services.equation_info import equation_to_dicts, get_limiting_ratios, get_limiting_reactant, get_theoretical_yields
+
+from services.validation import validate_equation_structure, validate_reaction, validate_quantity_dict, validate_compound_str
 
 app = FastAPI(title="Mole-Cule API", description = "This is the API used for the tool Mole-Cule.")
 
@@ -19,7 +21,9 @@ def Home():
 
 @app.get("/analyze")
 def analyze(formula: str):
+    validate_compound_str(formula)
     composition = get_composition(formula)
+
     molar_mass = get_molar_mass(composition)
     mass_percent_float = get_mass_percent(molar_mass, composition)
     
@@ -37,12 +41,20 @@ def analyze(formula: str):
     }
 
 @app.get("/convert")
-def convert(formula: str = "", mass: float = 0.0, mol: float = 0.0):
+def convert(formula: str, mass: float = 0.0, mol: float = 0.0):
+
+    validate_compound_str(formula)
+
     composition = get_composition(formula)
+
     molar_mass = get_molar_mass(composition)
     
+
+
     if mass and formula and not mol:
         mol = convert_mass_mole(molar_mass, mass, "to_mol")
+
+        mol = round(mol, 3)
 
         return {
             "mol": mol
@@ -50,6 +62,8 @@ def convert(formula: str = "", mass: float = 0.0, mol: float = 0.0):
     
     elif mol and formula and not mass:
         mass = convert_mass_mole(molar_mass, mol, "to_mass")
+
+        mass = round(mass, 3)
 
         return {
             "mass": mass
@@ -61,16 +75,27 @@ def convert(formula: str = "", mass: float = 0.0, mol: float = 0.0):
 
 @app.post("/limiting")
 def limiting(data: LimitingFactor):
+
     equation = data.equation
     reactants_mol = data.reactants_mol
 
+    validate_equation_structure(equation)
+    validate_quantity_dict(reactants_mol)
+
     reactants, products = equation_to_dicts(equation)
+
+    validate_reaction(reactants, products)
 
     limiting_ratios = get_limiting_ratios(reactants, reactants_mol)
 
     limiting_reactant = get_limiting_reactant(limiting_ratios)
 
     theoretical_yields = get_theoretical_yields(limiting_reactant, reactants, products, reactants_mol)
+
+    for compound, theo_yield in theoretical_yields.items():
+        theo_yield = round(theo_yield, 3)
+
+        theoretical_yields[compound] = theo_yield
 
     return {
         "limiting_reactant": limiting_reactant,
