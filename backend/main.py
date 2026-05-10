@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 from services.molecule_info import get_composition, get_molar_mass, get_mass_percent, convert_mass_mole
 
-from services.equation_info import equation_to_dicts, get_limiting_ratios, get_limiting_reactant, get_theoretical_yields
+from services.equation_info import equation_to_dicts, get_limiting_ratios, get_limiting_reactant, get_theoretical_yields, get_excess_remnants
 
 from services.validation import validate_equation_structure, validate_reaction, validate_quantity_dict, validate_compound_str
 
@@ -41,7 +41,7 @@ def analyze(formula: str):
     }
 
 @app.get("/convert")
-def convert(formula: str, mass: float = 0.0, mol: float = 0.0):
+def convert(formula: str, mass: float = None, mol: float = None):
 
     validate_compound_str(formula)
 
@@ -97,9 +97,13 @@ def limiting(data: LimitingFactor):
 
         theoretical_yields[compound] = theo_yield
 
+    excess_remnants = get_excess_remnants(limiting_reactant, reactants, reactants_mol)
+
     return {
         "limiting_reactant": limiting_reactant,
-        "theoretical_yields": theoretical_yields
+        "theoretical_yields": theoretical_yields,
+        "excess_remnants": excess_remnants
+        
     }
 
 

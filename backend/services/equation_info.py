@@ -1,67 +1,44 @@
 from fastapi import HTTPException
 
-        
+import re       
 
 def equation_to_dicts(equation:str):
     equation = equation.replace(" ", "")
 
     reactants = {}
-
     products = {}
 
     reactants_side, products_side = equation.split("->")
 
 
     def add_side_to_dict(side: str, dictionary: dict):
-        current_compound = ""
-        current_coefficient = ""
-        i = 0
-        while i < len(side):
-            char = side[i]
+        compounds = side.split("+")
 
-            if char.isdigit():
-                if current_compound == "":
-                   current_coefficient += char
+        for compound in compounds:
+            match = re.match("\d+", compound)
 
-                else:
-                    current_compound += char
-                i += 1
-                continue
+            count = 1
+            if match:
+                count = match.group()
+                compound = compound[len(count):]
+                count = int(count)
 
-            elif char.isalpha():
-                current_compound += char
-
-                i+=1
-
-            elif char == "+":
-                if current_compound != "":
-
-                    dictionary[current_compound] = int(current_coefficient) if current_coefficient else 1
-
-                    current_compound = ""
-                    current_coefficient = ""
-
-                    i += 1
-                    continue
-
-                else:
-                    raise HTTPException (status_code=422, detail="'+' Before any compound")
-                
-            else:
-                raise HTTPException(status_code= 400, detail= f"Invalid character: {char}")
+            if compound == "":
+                raise HTTPException(
+                    status_code = 422,
+                    detail = "Number unassigned to compound"
+                )
             
-        if current_compound:
-            dictionary[current_compound] = int(current_coefficient) if current_coefficient else 1
-        
-        return dictionary
-    
+            dictionary[compound] = dictionary.get(compound, 0) + count
 
 
-    reactants = add_side_to_dict(reactants_side, reactants)
-    products = add_side_to_dict(products_side, products)
+
+    add_side_to_dict(reactants_side, reactants)
+    add_side_to_dict(products_side, products)
 
     return reactants, products
   
+
     
 def get_limiting_ratios(reactants:dict, reactants_mol:dict):
 
@@ -81,12 +58,14 @@ def get_limiting_ratios(reactants:dict, reactants_mol:dict):
 
 
 
+
 def get_limiting_reactant(ratios_dict: dict):
     min_ratio =  min(ratios_dict.values())
 
     limiting_reactant = [compound for compound, ratio in ratios_dict.items() if ratio == min_ratio]
 
     return limiting_reactant[0]
+
 
 
 def get_theoretical_yields(limiting_reactant: str, reactants: dict, products: dict, reactants_mol: dict):
@@ -105,3 +84,26 @@ def get_theoretical_yields(limiting_reactant: str, reactants: dict, products: di
         theoretical_yields[product] = theo_yield
 
     return theoretical_yields
+
+
+
+def get_excess_remnants(limiting_reactant: str, reactants: dict, reactants_mol: dict):
+    
+    remnants = {}
+
+    limiting_count = reactants[limiting_reactant]
+
+    limiting_mol = reactants_mol[limiting_reactant]
+
+    limiting_ratio = limiting_mol / limiting_count
+
+    for compound, count in reactants.items():
+        if compound == limiting_reactant:
+            remnants[compound] = 0.000
+        else:
+            used_mol = limiting_ratio * float(count)
+            excess_mass = float(reactants_mol[compound]) - used_mol
+
+            remnants[compound] = round(excess_mass, 3)
+
+    return remnants
