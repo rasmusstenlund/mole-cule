@@ -85,7 +85,7 @@ def get_composition(formula):
         raise HTTPException(status_code=422, detail= "No formula provided")
 
 
-def get_molar_mass(composition):
+def get_molar_mass(composition: dict):
     total_mass = 0.0
 
     for element, amount in  composition.items():

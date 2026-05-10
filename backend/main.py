@@ -93,7 +93,6 @@ def limiting(data: LimitingFactor):
     theoretical_yields = get_theoretical_yields(limiting_reactant, reactants, products, reactants_mol)
 
     for compound, theo_yield in theoretical_yields.items():
-        theo_yield = round(theo_yield, 3)
 
         theoretical_yields[compound] = theo_yield
 

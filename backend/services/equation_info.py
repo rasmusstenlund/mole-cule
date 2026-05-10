@@ -2,6 +2,8 @@ from fastapi import HTTPException
 
 import re       
 
+from services.molecule_info import get_molar_mass, get_composition
+
 def equation_to_dicts(equation:str):
     equation = equation.replace(" ", "")
 
@@ -24,7 +26,7 @@ def equation_to_dicts(equation:str):
                 count = int(count)
 
             if compound == "":
-                raise HTTPException(
+                raise HTTPException(    
                     status_code = 422,
                     detail = "Number unassigned to compound"
                 )
@@ -79,9 +81,20 @@ def get_theoretical_yields(limiting_reactant: str, reactants: dict, products: di
 
         ratio = prod_coefficient / reac_coefficient
 
-        theo_yield = reac_mol * ratio
+        yield_mol = reac_mol * ratio
 
-        theoretical_yields[product] = theo_yield
+        composition = get_composition(product)
+
+        molar_mass = get_molar_mass(composition)
+
+        yield_mass = yield_mol * molar_mass
+
+        theoretical_yields[product] = {
+            "mol": yield_mol,
+            "grams": round(yield_mass, 3)
+        }
+
+
 
     return theoretical_yields
 
@@ -99,11 +112,17 @@ def get_excess_remnants(limiting_reactant: str, reactants: dict, reactants_mol: 
 
     for compound, count in reactants.items():
         if compound == limiting_reactant:
-            remnants[compound] = 0.000
+            remnants[compound] = {"mol": 0.000, "grams": 0.0}
         else:
             used_mol = limiting_ratio * float(count)
-            excess_mass = float(reactants_mol[compound]) - used_mol
+            excess_mol = float(reactants_mol[compound]) - used_mol
 
-            remnants[compound] = round(excess_mass, 3)
+            composition = get_composition(compound)
+
+            molar_mass = get_molar_mass(composition)
+
+            excess_mass = excess_mol * molar_mass
+
+            remnants[compound] = {"mol": round(excess_mol, 3), "grams": round(excess_mass, 3)}
 
     return remnants
