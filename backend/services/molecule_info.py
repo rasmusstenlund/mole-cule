@@ -92,9 +92,9 @@ def get_molar_mass(composition: dict):
 
         total_mass += elements_list[element]["atomic_mass"] * amount
 
-    return total_mass
+    return round(total_mass, 3)
 
-def get_mass_percent(total_mass, composition):
+def get_mass_fractions(total_mass, composition: dict):
     mass_fractions = {}
     for element, amount in composition.items():
 
@@ -108,8 +108,29 @@ def get_mass_percent(total_mass, composition):
 
 def convert_mass_mole(molar_mass, value, mode):
 
-    if mode == "to_mol":
+    if mode == "to_mol": 
         return value / molar_mass
     
     elif mode == "to_mass":
         return value * molar_mass
+
+
+def get_elements_data(composition: dict):
+    elements = {}
+
+    total_mass = get_molar_mass(composition)
+
+    mass_fraction = get_mass_fractions(total_mass, composition)
+    
+    for element, count in composition.items():
+        atomic_mass = elements_list[element]["atomic_mass"]
+
+        elements[element] = {
+            "count": count,
+            "atomic_number": elements_list[element]["atomic_number"],
+            "atomic_mass": atomic_mass,
+            "mass_contribution": atomic_mass * count,
+            "mass_percent": round(mass_fraction[element] * 100   , 2),
+        }
+
+    return elements

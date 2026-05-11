@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from services.molecule_info import get_composition, get_molar_mass, get_mass_percent, convert_mass_mole
+from services.molecule_info import get_composition, get_molar_mass, convert_mass_mole, get_elements_data
 
 from services.equation_info import equation_to_dicts, get_limiting_ratios, get_limiting_reactant, get_theoretical_yields, get_excess_remnants
 
@@ -24,22 +24,17 @@ def analyze(formula: str):
     validate_compound_str(formula)
     composition = get_composition(formula)
 
-    molar_mass = get_molar_mass(composition)
-    mass_percent_float = get_mass_percent(molar_mass, composition)
-    
-    mass_percent = {}
-    for element, value in mass_percent_float.items():
-        value = value *100
-        value = round(value, 2)
-        mass_percent[element] = value
+    elements_data = get_elements_data(composition)
 
+    molar_mass = get_molar_mass(composition) 
+    
     return {
         "formula": formula,
-        "composition": composition,
-        "molar_mass": molar_mass,
-        "mass_percent": mass_percent
+        "molar_mass":molar_mass,
+        "elements_data": elements_data,
+        "note": "Percentages may not add up to exactly 100% due to rounding"
     }
-
+ 
 @app.get("/convert")
 def convert(formula: str, mass: float = None, mol: float = None):
 
