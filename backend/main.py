@@ -7,6 +7,8 @@ from services.equation_info import equation_to_dicts, get_limiting_ratios, get_l
 
 from services.validation import validate_equation_structure, validate_reaction, validate_quantity_dict, validate_compound_str
 
+from services.balance import balance_equation
+
 app = FastAPI(title="Mole-Cule API", description = "This is the API used for the tool Mole-Cule.")
 
 class LimitingFactor(BaseModel):
@@ -33,6 +35,16 @@ def analyze(formula: str):
         "molar_mass":molar_mass,
         "elements_data": elements_data,
         "note": "Percentages may not add up to exactly 100% due to rounding"
+    }
+
+@app.get("/balance")
+def balance(equation:str):
+    validate_equation_structure(equation)
+
+    balanced_equation = balance_equation(equation)
+
+    return {
+        "balanced_equation": balanced_equation
     }
  
 @app.get("/convert")
@@ -78,8 +90,6 @@ def limiting(data: LimitingFactor):
     validate_quantity_dict(reactants_mol)
 
     reactants, products = equation_to_dicts(equation)
-
-    validate_reaction(reactants, products)
 
     limiting_ratios = get_limiting_ratios(reactants, reactants_mol)
 
