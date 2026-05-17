@@ -41,6 +41,11 @@ def analyze(formula: str):
 def balance(equation:str):
     validate_equation_structure(equation)
 
+    reactants, products = equation_to_dicts(equation)
+
+    validate_reaction(reactants, products)
+
+
     balanced_equation = balance_equation(equation)
 
     return {
