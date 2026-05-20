@@ -33,7 +33,7 @@ def get_composition(formula):
                 if len(composition) == 1:
                     raise HTTPException(
                         status_code = 422,
-                        detail = "Too many ')'"
+                        detail = "Unclosed parenthesis"
                     )
                 
                 group = composition.pop()

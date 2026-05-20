@@ -1,5 +1,7 @@
 from fractions import Fraction
 
+from fastapi import HTTPException
+
 from services.equation_info import equation_to_dicts
 
 from services.molecule_info import get_composition
@@ -15,6 +17,16 @@ def compounds_to_elements(compound_dict: dict):
 
 
     return compound_list
+
+def get_common_divisor(number, remainder):
+    while remainder:
+        number, remainder = remainder, number % remainder
+
+    return number
+
+def least_common_denominator(a, b):
+    return a * b // get_common_divisor(a, b)
+
 
 
 
@@ -41,17 +53,29 @@ def create_matrix(all_elements, reactants, products):
     return matrix
 
 
-
 def solve_matrix(matrix):
+    if not matrix or not matrix[0]:
+        raise HTTPException(
+            status_code = 422,
+            detail = "Matrix missing"
+        )
+
+
     column = 0
     anchor_row = 0
+
+
+    for row in matrix:
+        for i in range(len(row)):
+            row[i] = Fraction(row[i])
+
+
     while anchor_row < len(matrix) and column < len(matrix[0]):
 
         pivot_row = None
         for k in range(anchor_row, len(matrix)):
             if matrix[k][column] != 0:
                 pivot_row = k
-                break
         
         if pivot_row == None:
             column += 1
@@ -60,8 +84,14 @@ def solve_matrix(matrix):
         matrix[anchor_row], matrix[pivot_row] = matrix[pivot_row], matrix[anchor_row]
 
         anchor_num = matrix[anchor_row][column]
-            
+        
+        if anchor_num == 0:
+            raise HTTPException(
+                status_code = 422,
+                detail = "Matrix mathematically invalid"
+            )
 
+        l = 0
         while l < len(matrix[anchor_row]):
             matrix[anchor_row][l] /= anchor_num
             l += 1
@@ -84,38 +114,59 @@ def solve_matrix(matrix):
         column += 1
         anchor_row += 1
 
-    return matrix    
+    solution = [Fraction(0)] * len(matrix[0])
 
-def get_full_coefficients(coefficients):
-        fraction_coefficients = [Fraction(coefficient).limit_denominator(1000) for coefficient in coefficients]
-        last_coefficient = 1
-        while True:
-            test_coefficients = []
+    pivot_columns = []
 
-            for coefficient in fraction_coefficients:
-                test_coefficients.append(coefficient * last_coefficient)
+    for row in matrix:
+        for j in range(len(matrix[0])):
+            if row[j] != 0:
+                pivot_columns.append(j) 
+                break
 
-            all_whole = True
-
-            for coefficient in test_coefficients:
-                if coefficient.denominator != 1:
-                    all_whole = False
-
-            if all_whole:
-
-                final_coefficients = []
-                for coefficient in test_coefficients:
-                    final_coefficients.append(coefficient.numerator)
-
-                final_coefficients.append(last_coefficient)
-
-                
-
-                return final_coefficients
-            
-            last_coefficient += 1
+    free_columns = []
+    for j in range(len(matrix[0])):
+        if j not in pivot_columns:
+            free_columns.append(j)
 
 
+
+
+    for j in free_columns:
+        solution[j] = Fraction(1)
+    
+    for row in matrix:
+        pivot = None
+
+        for i in range(len(row)):
+            if row[i] != 0:
+                pivot = i
+                break
+
+        if pivot != None:
+            sum_free = Fraction(0)
+            for j in free_columns:
+                sum_free += row[j] * solution[j]
+
+            solution[pivot] = -sum_free
+
+    denominators = []
+    for i in range(len(solution)):
+        denominators.append(solution[i].denominator)
+
+
+    common_denominator = 1
+    for denominator in denominators:
+        common_denominator = least_common_denominator(common_denominator, denominator)
+
+    for i in range(len(solution)):
+        solution[i] *= common_denominator
+        solution[i] = int(solution[i])
+
+    return solution
+
+
+    
 
 
 def make_balanced_equation(coefficients, reactants, products):
@@ -128,17 +179,18 @@ def make_balanced_equation(coefficients, reactants, products):
         balanced_equation += reactant
         if number < (len(reactants) -1):
             balanced_equation += " + "
-        
+
         number += 1
 
     balanced_equation += " -> "
+
 
     for product in products:
         coefficient = str(int(coefficients[number]))
         if coefficient != "1":
             balanced_equation += coefficient
         balanced_equation += product
-        if number < (len(products) -1):
+        if number < (len(reactants) + len(products) -1):
             balanced_equation += " + "
         
         number += 1
@@ -153,6 +205,23 @@ def balance_equation(equation: str):
     reactants = compounds_to_elements(reactants_full)
     products = compounds_to_elements(products_full)
 
+    reactants_elements = set()
+    for reactant in reactants:
+        for element in reactant:
+            reactants_elements.add(element)
+
+    products_elements = set()
+    for product in products:
+        for element in product:
+            products_elements.add(element)
+
+    if reactants_elements != products_elements:
+        raise HTTPException(
+            status_code = 422,
+            detail = "Unmatched elements on sides of equation"
+        )
+
+
     compounds = reactants + products
     all_elements = set()
 
@@ -160,17 +229,19 @@ def balance_equation(equation: str):
         for element in compound:
             all_elements.add(element)
 
-    matrix = solve_matrix(create_matrix(all_elements, reactants, products))
+    matrix = create_matrix(all_elements, reactants, products)
 
-    coefficients = []
+    coefficients = solve_matrix(matrix)
 
-    for row in matrix:
-        if row[-1] != 0:
-            coefficients.append(abs(row[-1]))
+    compound_amount = len(reactants) + len(products)
 
+    if len(coefficients) != compound_amount:
+        raise HTTPException(
+            status_code = 422,
+            detail = "Unable to get coefficients for all compounds"
+        )
 
-    coefficients = get_full_coefficients(coefficients)
-    
     balanced_equation = make_balanced_equation(coefficients, reactants_full, products_full)
 
-    return balanced_equation
+
+    return balanced_equation, coefficients

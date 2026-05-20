@@ -4,6 +4,8 @@ from data.elements import elements_list
 
 from services.molecule_info import get_composition
 
+from services.equation_info import equation_to_dicts
+
 def validate_element(element: str):
     if not element:
         raise HTTPException(
@@ -81,17 +83,24 @@ def validate_quantity_dict(compound_dict: dict):
         
 
 def validate_reaction(reactants: dict, products:dict):
-    if not reactants or not products:
+    missing = ""
+
+    if not reactants and not products:
+        missing = "Reactants and Products"
+
+    elif not reactants:
+        missing = "Reactants"
+    
+    elif not products:
+        missing = "Products"
+
+    if missing:
         raise HTTPException(
             status_code = 422,
-            detail = "Empty equation"
-        )
-    
-    validate_quantity_dict(reactants)
-    validate_quantity_dict(products)
+            detail = f"Invalid equation: {missing} missing")
 
-
-def validate_equation_structure(equation: str):
+def validate_equation(equation: str):
+    equation = equation.replace(" ", "")
 
     arrow_count = equation.count("->")
 
@@ -103,8 +112,25 @@ def validate_equation_structure(equation: str):
     
     reactants, products = equation.split("->")
 
-    if not reactants or not products:
+    reactants = reactants.replace("+", "")
+
+    products = products.replace("+", "")
+
+    missing = ""
+    if not reactants and not products:
+        missing = "Reactants and Products"
+    elif not reactants:
+        missing = "Reactants"
+    elif not products:
+        missing = "Products"
+
+    if missing:
         raise HTTPException(
             status_code = 422,
-            detail = "Empty equation"
+            detail = f"Empty equation: {missing} missing"
         )
+    
+    reactants, products = equation_to_dicts(equation)
+
+    validate_quantity_dict(reactants)
+    validate_quantity_dict(products)
