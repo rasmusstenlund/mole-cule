@@ -50,14 +50,14 @@ def create_matrix(all_elements, reactants, products):
 
         matrix.append(row)
 
-    return matrix
+    return matrix   
 
 
 def solve_matrix(matrix):
     if not matrix or not matrix[0]:
         raise HTTPException(
             status_code = 422,
-            detail = "Matrix missing"
+            detail = "Unable to get matrix"
         )
 
 
@@ -92,24 +92,18 @@ def solve_matrix(matrix):
             )
 
         l = 0
-        while l < len(matrix[anchor_row]):
+        for l in range(len(matrix[anchor_row])):
             matrix[anchor_row][l] /= anchor_num
-            l += 1
 
         l = 0
-        while l < len(matrix):
+        for l in range(len(matrix)):
             if l == anchor_row:
-                l += 1
                 continue
 
-            mult_num = matrix[l][column]
+            multiplier = matrix[l][column]
 
-            curr_column = 0
-            while curr_column < len(matrix[anchor_row]):
-                matrix[l][curr_column] -= matrix[anchor_row][curr_column] * mult_num
-                curr_column += 1
-
-            l += 1
+            for current_column in range(len(matrix[anchor_row])):
+                matrix[l][current_column] -= matrix[anchor_row][current_column] * multiplier
 
         column += 1
         anchor_row += 1
@@ -149,6 +143,13 @@ def solve_matrix(matrix):
                 sum_free += row[j] * solution[j]
 
             solution[pivot] = -sum_free
+
+    for coefficient in solution:
+        if coefficient <= 0:
+            raise HTTPException(
+                status_code = 422,
+                detail = "Unable to get positive coefficients"
+            )
 
     denominators = []
     for i in range(len(solution)):

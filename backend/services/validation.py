@@ -47,15 +47,15 @@ def validate_composition(compound:dict):
                 detail = f"Invalid count for {element}"
                 )
         
-def validate_compound_str(compound: str):
-    if not compound:
+def validate_formula(formula: str):
+    if not formula:
         raise HTTPException(
             status_code = 422,
-            detail = "Compound missing"
+            detail = "Formula missing"
         )
 
 
-    composition = get_composition(compound)
+    composition = get_composition(formula)
 
     validate_composition(composition)
 
@@ -71,7 +71,7 @@ def validate_quantity_dict(compound_dict: dict):
 
 
     for compound, count in compound_dict.items():
-        validate_compound_str(compound)
+        validate_formula(compound)
 
         if count <= 0:
             raise HTTPException(
@@ -79,25 +79,6 @@ def validate_quantity_dict(compound_dict: dict):
                 detail = f"Invalid count for {compound}"
                 )
         
-
-        
-
-def validate_reaction(reactants: dict, products:dict):
-    missing = ""
-
-    if not reactants and not products:
-        missing = "Reactants and Products"
-
-    elif not reactants:
-        missing = "Reactants"
-    
-    elif not products:
-        missing = "Products"
-
-    if missing:
-        raise HTTPException(
-            status_code = 422,
-            detail = f"Invalid equation: {missing} missing")
 
 def validate_equation(equation: str):
     equation = equation.replace(" ", "")

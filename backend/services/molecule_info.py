@@ -13,11 +13,21 @@ def get_composition(formula):
 
         items = re.findall("[A-Z][a-z]*|\d+|\(|\)", formula)
 
-        unknown = re.sub("[A-Z][a-z]*|\d+|\(|\)", "", formula)
-        if unknown != "":
+        unknown_characters = re.sub("[A-Z][a-z]*|\d+|\(|\)", "", formula)
+
+        unknown_string = ""
+        for i in range(len(unknown_characters)):
+            unknown_string += unknown_characters[i]
+
+            if i < (len(unknown_characters) - 1):
+                unknown_string += ", "
+
+
+
+        if unknown_string != "":
             raise HTTPException(
                 status_code = 422,
-                detail = f"Unknown characters: {unknown}"
+                detail = f"Unknown characters: {unknown_string}"
             )
         
         i = 0

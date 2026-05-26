@@ -16,6 +16,7 @@ def equation_to_dicts(equation:str):
     def add_side_to_dict(side: str, dictionary: dict):
         compounds = side.split("+")
 
+
         for compound in compounds:
             match = re.match("\d+", compound)
 
