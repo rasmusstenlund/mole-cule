@@ -24,7 +24,10 @@ def reorder_elements(elements: list):
     else:
         electronegativity_values = []
         for element in elements:
-            electronegativity_values.append(elements_list[element]["electronegativity"])
+            electronegativity = elements_list[element]["electronegativity"]
+            if not electronegativity:
+                electronegativity = 0.0
+            electronegativity_values.append(electronegativity)
                                             
             
         for _ in range(len(elements)):
