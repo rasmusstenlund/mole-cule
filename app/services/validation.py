@@ -1,10 +1,9 @@
 from fastapi import HTTPException
 
-from data.elements import elements_list
+from app.data.elements import elements_list
 
-from services.molecule_info import get_composition
-
-from services.equation_info import equation_to_dicts
+from app.services.compound_info import get_composition, seperate_state
+from app.services.equation_info import equation_to_dicts
 
 def validate_element(element: str):
     if not element:
@@ -15,7 +14,7 @@ def validate_element(element: str):
     if element not in elements_list:
         raise HTTPException(
             status_code = 422, 
-            detail = f"Unknown Element: {element}"
+            detail = f"Unknown Element: '{element}'"
             )
      
     if elements_list[element]["atomic_mass"] is None:
@@ -44,18 +43,22 @@ def validate_composition(compound:dict):
         if count <= 0:
             raise HTTPException(
                 status_code = 422, 
-                detail = f"Invalid count for {element}"
+                detail = f"Invalid count for '{element}': Element cannot be 0"
                 )
         
 def validate_formula(formula: str):
     if not formula:
         raise HTTPException(
             status_code = 422,
-            detail = "Formula missing"
+            detail = "Invalid input: Must contain formula"
         )
+    
+    formula.replace(" ", "")
+    
+    clean_formula, state = seperate_state(formula)
 
 
-    composition = get_composition(formula)
+    composition = get_composition(clean_formula)
 
     validate_composition(composition)
 
@@ -76,21 +79,29 @@ def validate_quantity_dict(compound_dict: dict):
         if count <= 0:
             raise HTTPException(
                 status_code = 422, 
-                detail = f"Invalid count for {compound}"
+                detail = f"Invalid count for '{compound}': Amount must be greater than 0"
                 )
         
 
 def validate_equation(equation: str):
     equation = equation.replace(" ", "")
 
+    test_empty_equation = (equation.replace("+", "")).replace("->", "")
+
+    if test_empty_equation == "":
+        raise HTTPException(
+            status_code = 422,
+            detail = f"Invalid structure: Empty equation"
+        )
+
     arrow_count = equation.count("->")
 
     if arrow_count != 1:
         raise HTTPException(
             status_code = 422,
-            detail = "Arrow count invalid: Use 1 '->'"
+            detail = "Invalid structure: Only use 1 '->'"
         )
-    
+
     reactants, products = equation.split("->")
 
     reactants = reactants.replace("+", "")
@@ -98,18 +109,17 @@ def validate_equation(equation: str):
     products = products.replace("+", "")
 
     missing = ""
-    if not reactants and not products:
-        missing = "Reactants and Products"
-    elif not reactants:
-        missing = "Reactants"
+    if not reactants:
+        missing = "Reactant(s) missing"
     elif not products:
-        missing = "Products"
+        missing = "Product(s) missing"
 
     if missing:
         raise HTTPException(
             status_code = 422,
-            detail = f"Empty equation: {missing} missing"
+            detail = f"Invalid structure: {missing}"
         )
+    
     
     reactants, products = equation_to_dicts(equation)
 

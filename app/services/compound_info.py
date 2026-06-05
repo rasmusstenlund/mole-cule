@@ -2,43 +2,108 @@ from fastapi import HTTPException
 
 import re
 
-from data.elements import elements_list
+from app.data.elements import elements_list
 
+def seperate_state(formula: str):
 
+    pattern = "(\((s|l|g|aq)\))$"
 
-def get_composition(formula):
-    if formula:
-        composition = [{}]
+    clean_formula = re.sub(pattern, "", formula)
 
+    match = re.search(pattern, formula)
 
-        items = re.findall("[A-Z][a-z]*|\d+|\(|\)", formula)
+    if match:
+        state = match.group(1)
 
-        unknown_characters = re.sub("[A-Z][a-z]*|\d+|\(|\)", "", formula)
+        if clean_formula == "H2O" and state == "(aq)":
+            state = "(l)"
+
+        return clean_formula, state
+    
+    return clean_formula, ""
+
+def get_composition(formula: str):
+    if not formula:
+        raise HTTPException(
+            status_code = 422,
+            detail = "No formula provided"
+        )
+
+    formula.replace(" ", "")
+
+    formula_parts = []
+
+    if "*" in formula:
+        formula_parts = formula.split("*")
+
+        for part in formula_parts:
+            if not part:
+                raise HTTPException(
+                    status_code = 422,
+                    detail = "Invalid use of '*'"
+                )
+
+    else:
+        formula_parts = [formula]
+
+    composition = [{}]
+    place = 0
+    for part in formula_parts:
+        place += 1
+        coefficient = 1
+
+        pattern = "[A-Z][a-z]*|\d+|\(|\)|\[|\]"
+
+        items = re.findall(pattern, part)
+
+        unknown_characters = re.sub(pattern, "", part)
 
         unknown_string = ""
         for i in range(len(unknown_characters)):
-            unknown_string += unknown_characters[i]
+            unknown_string += f"'{unknown_characters[i]}'"
 
             if i < (len(unknown_characters) - 1):
                 unknown_string += ", "
 
 
-
-        if unknown_string != "":
+        if unknown_string:
             raise HTTPException(
                 status_code = 422,
-                detail = f"Unknown characters: {unknown_string}"
+                detail = f"Unknown character(s): {unknown_string}"
             )
         
         i = 0
+        bracket_types = {
+            "(": "round",
+            ")": "round",
+            "[": "square",
+            "]": "square"
+        }
+        brackets = []
+
         while i < len(items):
 
-            if items[i] == "(":
+            if items[i] == "(" or items[i] == "[":
                 composition.append({})
+                brackets.append(bracket_types[items[i]])
 
                 i +=1
                 continue
-            elif items[i] == ")":
+            elif items[i] == ")" or items[i] == "]":
+
+                if brackets[-1] != bracket_types[items[i]]:
+                    open_bracket = "("
+                    if brackets[-1] == "square":
+                        open_bracket = "("
+                        if brackets[-1] == "square":
+                            open_bracket = "["
+
+                    raise HTTPException(
+                        status_code = 422,
+                        detail = f"Mismatched brackets: '{open_bracket}' and '{items[i]}'"
+                    )
+                
+                brackets.pop()
 
                 if len(composition) == 1:
                     raise HTTPException(
@@ -46,6 +111,7 @@ def get_composition(formula):
                         detail = "Unclosed parenthesis"
                     )
                 
+
                 group = composition.pop()
 
                 multiplier = 1
@@ -63,10 +129,15 @@ def get_composition(formula):
                 continue
 
             elif items[i].isdigit():
-                raise HTTPException(
-                    status_code = 422,
-                    detail = "Number unassigned to group or element"
-                )
+                if place <= 1:
+                    raise HTTPException(
+                        status_code = 422,
+                        detail = "Number unassigned to group or element"
+                    )
+                else:
+                    coefficient = float(items[i])
+                    i += 1
+                    continue
             
 
             else:
@@ -78,21 +149,21 @@ def get_composition(formula):
                     count = int(items[i + 1])
                     i += 1
 
-                composition[-1][element] = composition[-1].get(element, 0) + count
+                composition[-1][element] = composition[-1].get(element, 0) + (count * coefficient)
 
                 i += 1
                 continue
-        
+
+
         if len(composition) != 1:
             raise HTTPException(
                 status_code = 422,
                 detail = "Unclosed parenthesis"
             )
+        
 
-        return composition[0]
-    
-    else:
-        raise HTTPException(status_code=422, detail= "No formula provided")
+
+    return composition[0]
 
 
 def get_molar_mass(composition: dict):
@@ -117,6 +188,11 @@ def get_mass_fractions(total_mass, composition: dict):
 
 
 def convert_mass_mole(molar_mass, value, mode):
+    if value <= 0:
+        raise HTTPException(
+            status_code = 422,
+            detail = "Invalid value: Must be greater than 0"
+        )
 
     if mode == "to_mol": 
         return value / molar_mass

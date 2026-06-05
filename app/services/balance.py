@@ -2,16 +2,15 @@ from fractions import Fraction
 
 from fastapi import HTTPException
 
-from services.equation_info import equation_to_dicts
-
-from services.molecule_info import get_composition
-
+from app.services.equation_info import equation_to_dicts
+from app.services.compound_info import get_composition, seperate_state
 
 
 
-def compounds_to_elements(compound_dict: dict):
+
+def compounds_to_elements(compounds: list):
     compound_list = []
-    for compound in compound_dict:
+    for compound in compounds:
         composition = get_composition(compound)
         compound_list.append(composition)
 
@@ -26,8 +25,6 @@ def get_common_divisor(number, remainder):
 
 def least_common_denominator(a, b):
     return a * b // get_common_divisor(a, b)
-
-
 
 
 def create_matrix(all_elements, reactants, products):
@@ -170,14 +167,17 @@ def solve_matrix(matrix):
     
 
 
-def make_balanced_equation(coefficients, reactants, products):
+def make_balanced_equation(coefficients, states, reactants, products,):
     number = 0
     balanced_equation = ""
     for reactant in reactants:
         coefficient = str(int(coefficients[number]))
         if coefficient != "1":
             balanced_equation += coefficient
+
         balanced_equation += reactant
+        balanced_equation += states[number]
+
         if number < (len(reactants) -1):
             balanced_equation += " + "
 
@@ -185,12 +185,14 @@ def make_balanced_equation(coefficients, reactants, products):
 
     balanced_equation += " -> "
 
-
     for product in products:
         coefficient = str(int(coefficients[number]))
         if coefficient != "1":
             balanced_equation += coefficient
+
         balanced_equation += product
+        balanced_equation += states[number]
+
         if number < (len(reactants) + len(products) -1):
             balanced_equation += " + "
         
@@ -203,9 +205,26 @@ def make_balanced_equation(coefficients, reactants, products):
 def balance_equation(equation: str):
     reactants_full, products_full = equation_to_dicts(equation)
 
-    reactants = compounds_to_elements(reactants_full)
-    products = compounds_to_elements(products_full)
+    clean_reactants = []
+    clean_products = []
 
+    states = []
+
+    for reactant in reactants_full:
+        clean_reactant, state = seperate_state(reactant)
+
+        clean_reactants.append(clean_reactant)
+        states.append(state)
+
+    for product in products_full:
+        clean_product, state = seperate_state(product)
+
+        clean_products.append(clean_product)
+        states.append(state)
+
+
+    reactants = compounds_to_elements(clean_reactants)
+    products = compounds_to_elements(clean_products)
     reactants_elements = set()
     for reactant in reactants:
         for element in reactant:
@@ -219,7 +238,7 @@ def balance_equation(equation: str):
     if reactants_elements != products_elements:
         raise HTTPException(
             status_code = 422,
-            detail = "Unmatched elements on sides of equation"
+            detail = "Invalid equation: Mismatched elements on sides of equation"
         )
 
 
@@ -232,17 +251,28 @@ def balance_equation(equation: str):
 
     matrix = create_matrix(all_elements, reactants, products)
 
-    coefficients = solve_matrix(matrix)
+    matrix_coefficients = solve_matrix(matrix)
 
     compound_amount = len(reactants) + len(products)
 
-    if len(coefficients) != compound_amount:
+    if len(matrix_coefficients) != compound_amount:
         raise HTTPException(
             status_code = 422,
             detail = "Unable to get coefficients for all compounds"
         )
 
-    balanced_equation = make_balanced_equation(coefficients, reactants_full, products_full)
 
+    balanced_equation = make_balanced_equation(matrix_coefficients, states, clean_reactants, clean_products)
+
+    coefficients = {"reactants": {}, "products": {}}
+
+    i = 0
+    for reactant in clean_reactants:
+        coefficients["reactants"][reactant] = matrix_coefficients[i]
+        i += 1
+
+    for product in clean_products:
+        coefficients["products"][product] = matrix_coefficients[i]
+        i += 1
 
     return balanced_equation, coefficients

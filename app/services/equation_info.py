@@ -2,7 +2,8 @@ from fastapi import HTTPException
 
 import re       
 
-from services.molecule_info import get_molar_mass, get_composition
+from app.services.compound_info import get_molar_mass, get_composition, seperate_state
+
 
 def equation_to_dicts(equation:str):
     equation = equation.replace(" ", "")
@@ -18,6 +19,7 @@ def equation_to_dicts(equation:str):
 
 
         for compound in compounds:
+
             match = re.match("\d+", compound)
 
             count = 1
@@ -40,22 +42,56 @@ def equation_to_dicts(equation:str):
     add_side_to_dict(products_side, products)
 
     return reactants, products
-  
 
     
 def get_limiting_ratios(reactants:dict, reactants_mol:dict):
+    unexpected_reactants = []
+    for reactant in reactants_mol:
+        if reactant not in reactants:
+            unexpected_reactants.append(reactant)
+    
+    if unexpected_reactants:
+        unexpected_string = ""
+        for i in range(len(unexpected_reactants)):
+            unexpected_string += f"'{unexpected_reactants[i]}'"
+
+            if i < (len(unexpected_reactants) - 1):
+                unexpected_string += ", "
+
+        raise HTTPException(
+            status_code = 422,
+            detail = f"Unexpected reactant(s) in list: {unexpected_string}"
+        )
+
 
     ratios_dict = {}
 
+    reactants_missing = []
+
     for reactant, coefficient in reactants.items():
+
         mol = reactants_mol.get(reactant)
 
         if mol is None:
-            raise HTTPException(status_code = 422, detail = f"Missing mol for {reactant}")
+            reactants_missing.append(reactant)
+            continue
+            
 
         ratio = mol / coefficient
 
         ratios_dict[reactant] = ratio
+
+    if reactants_missing:
+        missing_string = ""
+        for i in range(len(reactants_missing)):
+            missing_string += f"'{reactants_missing[i]}'"
+            if i < (len(reactants_missing) - 1):
+                missing_string += ", "
+
+        raise HTTPException(
+            status_code = 422, 
+            detail = f"Reactant(s) missing from list: {missing_string}"
+            )
 
     return ratios_dict 
 
