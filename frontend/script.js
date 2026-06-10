@@ -7,7 +7,28 @@ function get_home_page() {
 
 function get_analyze_page() {
     return `
-        <h1>Analyze compound</h1>
+        <div class = "analyze">
+            <div class = "enter">
+                <form>
+                    <input type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
+                </form>
+            </div>
+            <div class = "elements">
+                <div>
+                    <p>Formula</p>
+                    <p>Molar mass</p>
+                </div>
+                <p>Elements:</p>
+                <div>
+                    <h2>H:</h2>
+                    <p>Hydrogen</p>
+                </div>
+                <div>
+                    <h2>O:</h2>
+                    <p>Ogyxen</p>
+                </div>
+            </div>
+        </div>
     `;
 }
 
