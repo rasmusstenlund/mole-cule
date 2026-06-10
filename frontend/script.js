@@ -9,8 +9,12 @@ function get_analyze_page() {
     return `
         <div class = "analyze">
             <div class = "enter">
-                <form>
-                    <input type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
+                <form class = "write">
+                    <input class = "compound" type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
+                    <input class = "clear" type = "button" value = "Clear">
+                </form>
+                <form class = "submit">
+                    <input type = "button" value = "Analyze">
                 </form>
             </div>
             <div class = "elements">
@@ -18,14 +22,32 @@ function get_analyze_page() {
                     <p>Formula</p>
                     <p>Molar mass</p>
                 </div>
-                <p>Elements:</p>
-                <div>
-                    <h2>H:</h2>
-                    <p>Hydrogen</p>
+                <div class = "element">
+                    <p class = "symbol">Symbol</p>
+                    <p>Count</p>
+                    <p>Atomic_num</p>
+                    <p>Atomic_mass</p>
+                    <p></p>
+                    <p>Mass_contr</p>
+                    <p>Mass_percent</p>
                 </div>
-                <div>
-                    <h2>O:</h2>
-                    <p>Ogyxen</p>
+                <div class = "element">
+                    <p class = "symbol">Symbol</p>
+                    <p>Count</p>
+                    <p>Atomic_num</p>
+                    <p>Atomic_mass</p>
+                    <p></p>
+                    <p>Mass_contr</p>
+                    <p>Mass_percent</p>
+                </div>
+                <div class = "element">
+                    <p class = "symbol">Symbol</p>
+                    <p>Count</p>
+                    <p>Atomic_num</p>
+                    <p>Atomic_mass</p>
+                    <p></p>
+                    <p>Mass_contr</p>
+                    <p>Mass_percent</p>
                 </div>
             </div>
         </div>
