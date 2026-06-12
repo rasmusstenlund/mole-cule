@@ -10,45 +10,38 @@ function get_analyze_page() {
         <div class = "analyze">
             <div class = "enter">
                 <form class = "write">
-                    <input class = "compound" type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
-                    <input class = "clear" type = "button" value = "Clear">
+                    <input type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
                 </form>
-                <form class = "submit">
-                    <input type = "button" value = "Analyze">
+                <form class = "buttons">
+                    <input type = "button" value = "Analyze" class = "submit">
+                    <input type = "button" class = "clear" value = "Clear">
                 </form>
+                <form>
+                    
+                </form>
+
             </div>
             <div class = "elements">
-                <div>
-                    <p>Formula</p>
-                    <p>Molar mass</p>
-                </div>
-                <div class = "element">
-                    <p class = "symbol">Symbol</p>
-                    <p>Count</p>
-                    <p>Atomic_num</p>
-                    <p>Atomic_mass</p>
-                    <p></p>
-                    <p>Mass_contr</p>
-                    <p>Mass_percent</p>
-                </div>
-                <div class = "element">
-                    <p class = "symbol">Symbol</p>
-                    <p>Count</p>
-                    <p>Atomic_num</p>
-                    <p>Atomic_mass</p>
-                    <p></p>
-                    <p>Mass_contr</p>
-                    <p>Mass_percent</p>
-                </div>
-                <div class = "element">
-                    <p class = "symbol">Symbol</p>
-                    <p>Count</p>
-                    <p>Atomic_num</p>
-                    <p>Atomic_mass</p>
-                    <p></p>
-                    <p>Mass_contr</p>
-                    <p>Mass_percent</p>
-                </div>
+                <p>Symbol</p>
+                <p>Atomic Number</p>
+                <p>Count</p>
+                <p>Atomic Mass</p>
+                <p>Mass Contribution</p>
+                <p>Mass Percent</p>
+
+                <p>H</p>
+                <p>1</p>
+                <p>2</p>
+                <p>1.008</p>
+                <p>2.016</p>
+                <p>xxxx</p>
+
+                <p>O</p>
+                <p>8</p>
+                <p>1</p>
+                <p>15.999</p>
+                <p>15.999</p>
+                <p>xxxx</p>
             </div>
         </div>
     `;
