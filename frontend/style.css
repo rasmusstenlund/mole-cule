@@ -40,18 +40,17 @@ body {
 .analyze {
     display: flex;
     justify-content: space-evenly;
-    flex-wrap: wrap;
     align-items: flex-start;
 }
 
 .analyze .enter {
-    background-color: rgb(31, 31, 34);
-    width: 40vw;
+    background-color: rgb(31, 31, 34);;
     display:flex;
     flex-direction: column;
     align-items: center;
     height: 40vh;
     border-radius: 0.8vw;
+    width: clamp(225px, 35vw, 35vw);
 }
 .analyze .enter .write {
     margin: 0;
@@ -65,7 +64,7 @@ body {
 
 .analyze .enter .write input {
     width: 90%;
-    margin-top: 20px;
+    margin-top: 5px;
     box-sizing: border-box;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -91,7 +90,7 @@ body {
 }
 
 .analyze .enter .buttons .submit {
-    width: clamp(70px, 7vw, 350px);
+    width: clamp(70px, 25%, 350px);
     padding-top: 15px;
     padding-bottom: 15px;
     background-color: #4b4b64;
@@ -108,7 +107,7 @@ body {
 
 .analyze .enter .buttons .clear {
 
-    width: clamp(55px, 4vw, 200px);
+    width: clamp(55px, 10%, 200px);
     padding-top: 5px;
     padding-bottom: 5px;
     border: 2px solid rgb(185, 0, 0);
@@ -130,13 +129,56 @@ body {
 }
 
 .analyze .elements{
-    background-color: rgb(31, 31, 34);
-    width: 55vw;
-    padding-top: 2vh;
-    padding-bottom: 2vh;
-    border-radius: 1vw;
+    width: clamp(450px, 60vw, 60vw);
+}
+
+.analyze .elements .desktop {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
-    justify-content: space-evenly;
-    align-content: start;
+    background-color: rgb(31, 31, 34);
+    grid-template-columns:repeat(5, 1fr);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.analyze .elements .element_card {
+    margin-top: 10px;
+    display: grid;
+    font-weight: bold;
+    font-size: 1.1rem;
+    background-color: rgb(31, 31, 34);
+    grid-template-columns:repeat(5, 1fr);
+    border-radius: 10px;
+    padding: 10px
+}
+
+.analyze .elements .mobile {
+    display: none;
+}
+
+/* Compressed / Phone */
+@media screen and (max-width: 670px) {
+    .analyze {
+        flex-direction: column;
+    }
+    .analyze .enter {
+        width: clamp(300px, 95vw, 95vw);
+    }
+
+    .analyze .elements .mobile {
+        display: revert;
+    }
+
+    .analyze .elements .element_card {
+        display: Grid;
+        grid-template-columns:repeat(2, 1fr);
+
+    }
+
+    .analyze .elements {
+        width: 95vw;
+    }
+
+    .analyze .elements .desktop {
+        display: none;
+    }
 }

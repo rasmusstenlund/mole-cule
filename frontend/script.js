@@ -9,6 +9,7 @@ function get_analyze_page() {
     return `
         <div class = "analyze">
             <div class = "enter">
+            <p>Formula</p>
                 <form class = "write">
                     <input type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
                 </form>
@@ -22,26 +23,30 @@ function get_analyze_page() {
 
             </div>
             <div class = "elements">
-                <p>Symbol</p>
-                <p>Atomic Number</p>
-                <p>Count</p>
-                <p>Atomic Mass</p>
-                <p>Mass Contribution</p>
-                <p>Mass Percent</p>
+                <div class = "desktop">
+                    <p>Element</p>
+                    <p>Count</p>
+                    <p>Unit mass (u)</p>
+                    <p>Total mass (u)</p>
+                    <p>Mass %</p>
+                </div>
 
-                <p>H</p>
-                <p>1</p>
-                <p>2</p>
-                <p>1.008</p>
-                <p>2.016</p>
-                <p>xxxx</p>
+                <div class = "element_card">
+                    <p class = "value">X</p> <p class = "mobile"></p>
+                    <p class = "mobile">Count:</p> <p class = "value">0</p>
+                    <p class = "mobile">Unit mass (u):</p> <p class = "value">000.000</p>
+                    <p class = "mobile">Total mass (u):</p> <p class = "value">000.000</p>
+                    <p class = "mobile">Mass %:</p> <p class = "value">00.00</p>
+                </div>
 
-                <p>O</p>
-                <p>8</p>
-                <p>1</p>
-                <p>15.999</p>
-                <p>15.999</p>
-                <p>xxxx</p>
+                <div class = "element_card">
+                    <p class = "value">Y</p> <p class = "mobile"></p>
+                    <p class = "mobile">Count:</p> <p class = "value">0</p>
+                    <p class = "mobile">Unit mass (u):</p> <p class = "value">000.000</p>
+                    <p class = "mobile">Total mass (u):</p> <p class = "value">000.000</p>
+                    <p class = "mobile">Mass %:</p> <p class = "value">00.00</p>
+                </div>
+
             </div>
         </div>
     `;
