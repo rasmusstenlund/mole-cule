@@ -22,7 +22,13 @@ function get_analyze_page() {
                 </form>
 
             </div>
-            <div class = "elements">
+            
+            <div class = "data">
+                <div class = "formula">
+                    <p>XY</p>
+                    <p class = "molar_mass">Molar mass: 000.000 g/mol</p>
+                </div>
+
                 <div class = "desktop">
                     <p>Element</p>
                     <p>Count</p>

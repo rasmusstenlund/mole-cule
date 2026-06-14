@@ -48,7 +48,7 @@ body {
     display:flex;
     flex-direction: column;
     align-items: center;
-    height: 40vh;
+    height: clamp(200px, 35vh, 35vh);
     border-radius: 0.8vw;
     width: clamp(225px, 35vw, 35vw);
 }
@@ -63,6 +63,7 @@ body {
 }
 
 .analyze .enter .write input {
+    height: clamp(45px, 10vh, 75px);
     width: 90%;
     margin-top: 5px;
     box-sizing: border-box;
@@ -128,19 +129,37 @@ body {
     outline: none;
 }
 
-.analyze .elements{
+.analyze .data{
     width: clamp(450px, 60vw, 60vw);
 }
 
-.analyze .elements .desktop {
+.analyze .data .formula {
+    display: flex;
+    background-color: rgb(31, 31, 34);
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.analyze .data .formula .molar_mass {
+    font-size: 1rem;
+    font-weight: normal; 
+}
+
+.analyze .data .desktop {
+    margin-top: 20px;
     display: grid;
     background-color: rgb(31, 31, 34);
     grid-template-columns:repeat(5, 1fr);
     padding: 10px;
     border-radius: 10px;
+    text-align: center;
 }
 
-.analyze .elements .element_card {
+.analyze .data .element_card {
     margin-top: 10px;
     display: grid;
     font-weight: bold;
@@ -148,10 +167,11 @@ body {
     background-color: rgb(31, 31, 34);
     grid-template-columns:repeat(5, 1fr);
     border-radius: 10px;
-    padding: 10px
+    padding: 10px;
+    text-align: center;
 }
 
-.analyze .elements .mobile {
+.analyze .data .mobile {
     display: none;
 }
 
@@ -164,21 +184,27 @@ body {
         width: clamp(300px, 95vw, 95vw);
     }
 
-    .analyze .elements .mobile {
+    .analyze .data .mobile {
         display: revert;
+        font-weight: normal;
+        font-size: 1rem;
     }
 
-    .analyze .elements .element_card {
+    .analyze .data .element_card {
         display: Grid;
-        grid-template-columns:repeat(2, 1fr);
-
+        grid-template-columns: 1fr auto;
+        text-align: left;
     }
 
-    .analyze .elements {
+    .analyze .data {
         width: 95vw;
     }
 
-    .analyze .elements .desktop {
+    .analyze .data .desktop {
         display: none;
+    }
+
+    .analyze .data .formula {
+        margin-top: 10px;
     }
 }
