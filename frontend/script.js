@@ -10,17 +10,15 @@ function get_analyze_page() {
         <div class = "analyze">
             <div class = "enter">
             <p>Formula</p>
-                <form class = "write">
-                    <input type = "text" id = "formula" name = "formula" placeholder = "e.g H2O">
-                </form>
-                <form class = "buttons">
-                    <input type = "button" value = "Analyze" class = "submit">
-                    <input type = "button" class = "clear" value = "Clear">
-                </form>
                 <form>
-                    
+                    <div class = "write">
+                        <input type = "text" id = "analyze-formula" name = "formula" placeholder = "e.g H2O">
+                    </div>
+                    <div class = "buttons">
+                        <input type = "submit" class = "submit" value = "Analyze">
+                        <input type = "button" class = "clear" value = "Clear">
+                    </div>
                 </form>
-
             </div>
             
             <div class = "data">
@@ -60,7 +58,38 @@ function get_analyze_page() {
 
 function get_convert_page() {
     return `
-        <h1>Convert between mass and mol</h1>
+        <div class = "convert">
+            <div class = "enter">
+                <form>
+                    <div class = "write">
+                        <input type = "text" id = "convert-formula" placeholder = "e.g H2O">
+                    </div>
+
+                    <div class = "unit">
+                        <div class = "toggle-unit">
+                            <input type = "radio" id = "convert-mol" name = "unit">
+                            <label for = "convert-mol">Mol</label>
+
+                            <input type = "radio" id = "convert-mass" name = "unit">
+                            <label for = "convert-mass">Mass</label>
+
+                            <div class = "slider"></div>
+                        </div>
+
+                        <input class = "write-unit" type = "text" id = "convert-unit-count" name = "convert-count">
+
+                    </div>
+
+                    <div class = "buttons">
+                        <input class = "submit" type = "submit" value = "Convert">
+                        <input class = "submit" type = "button" value = "Clear">
+                    </div>
+                </form>
+            </div>
+            <div class = "data">
+
+            </div>
+        </div>
     `;
 }
 
