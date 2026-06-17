@@ -10,15 +10,13 @@ function get_analyze_page() {
         <div class = "analyze">
             <div class = "enter">
             <p>Formula</p>
-                <form>
-                    <div class = "write">
-                        <input type = "text" id = "analyze-formula" name = "formula" placeholder = "e.g H2O" required>
-                    </div>
-                    <div class = "buttons">
-                        <input type = "submit" class = "submit" value = "Analyze">
-                        <input type = "button" class = "clear" value = "Clear">
-                    </div>
-                </form>
+                <div class = "write">
+                    <input type = "text" id = "analyze-formula" name = "formula" placeholder = "e.g H2O" required>
+                </div>
+                <div class = "buttons">
+                        <input type = "button" class = "submit-button" id = "analyze-submit" value = "Analyze">
+                        <input type = "button" class = "clear-button" id = "analyze-clear" value = "Clear">
+                </div>
             </div>
             
             <div class = "data">
@@ -60,32 +58,31 @@ function get_convert_page() {
     return `
         <div class = "convert">
             <div class = "enter">
-                <form>
-                    <p>Formula</p>
-                    <input type = "text" id = "convert-formula" name = "formula" placeholder = "e.g H2O" required>
+                <p>Formula</p>
+                <input type = "text" id = "convert-formula" name = "formula" placeholder = "e.g H2O" required>
 
-                    <p>Value to convert</p>
-                    <div class = "unit">
-                        <div class = "toggle-unit">
-                            <input type = "radio" id = "convert-mol" name = "unit" value = "mol">
-                            <label for = "convert-mol">Mol</label>
+                <p>Value to convert</p>
+                <div class = "unit">
+                    <div class = "toggle-unit">
+                        <input type = "radio" id = "convert-mol" name = "unit" value = "mol">
+                        <label for = "convert-mol">Mol</label>
 
-                            <input type = "radio" id = "convert-mass" name = "unit" value = "mass" checked>
-                            <label for = "convert-mass">Mass</label>
+                        <input type = "radio" id = "convert-mass" name = "unit" value = "mass" checked>
+                        <label for = "convert-mass">Mass</label>
 
-                            <div class = "slider"></div>
-                        </div>
-
-                        <input class = "write-unit" type = "text" id = "convert-unit-count" name = "count" required>
-
+                        <div class = "slider"></div>
                     </div>
 
-                    <div class = "buttons">
-                        <input class = "submit" type = "submit" value = "Convert">
-                        <input class = "clear" type = "button" value = "Clear">
-                    </div>
-                </form>
+                    <input class = "write-unit" type = "text" id = "convert-unit-count" name = "count" required>
+
+                </div>
+
+                <div class = "buttons">
+                    <input type = "button" class = "submit-button" id = "convert-submit" value = "Convert">
+                    <input type = "button" class = "clear-button" id = "convert-clear" value = "Clear">
+                </div>
             </div>
+
             <div class = "data">
                 <p class = "formula">XY</p>
 
@@ -107,7 +104,30 @@ function get_convert_page() {
 
 function get_balance_page() {
     return `
-        <h1>Balance reaction</h1>
+        <div class = "balance">
+            <div class = "enter">
+                <div class = "equation-maker">
+                    <p>Reactants</p>
+                    <div class = "equation-side reactants-side">
+                        <input type = "text" class = "reactant-input">
+                        <input type = "button" id = "balance-add-reactant" class = "add-button" value = "+ Reactant">
+                    </div>
+                    <p class = "arrow">&#8594</p>
+                    <p>Products</p>
+                    <div class = "equation-side products-side">
+                        <input type = "text" class = "product-input">
+                        <input type = "button" id = "balance-add-product" class = "add-button" value = "+ Product">
+                    </div>
+                </div>
+                <div class = "buttons">
+                    <input type = "button" class = "submit-button" id = "balance-submit" value = "Balance">
+                    <input type = "button" class = "clear-button" id = "balance-clear" value = "Clear">
+                </div>
+            </div>
+
+            <div class = "data">
+            </div>
+        </div>
     `;
 }
 
