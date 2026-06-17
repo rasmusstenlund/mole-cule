@@ -96,7 +96,7 @@ function get_convert_page() {
                     </div>
 
                     <div class = "mass-data">
-                        <p>Mass</p>
+                        <p>Mass (g)</p>
                         <p class = "data-mass">000.000</p>
                     </div>
                 </div>
