@@ -87,7 +87,19 @@ function get_convert_page() {
                 </form>
             </div>
             <div class = "data">
+                <p class = "formula">XY</p>
 
+                <div class = "count-data">
+                    <div class = "mol-data">
+                        <p>Mol</p>
+                        <p class = "data-mol">00.00</p>
+                    </div>
+
+                    <div class = "mass-data">
+                        <p>Mass</p>
+                        <p class = "data-mass">000.000</p>
+                    </div>
+                </div>
             </div>
         </div>
     `;
