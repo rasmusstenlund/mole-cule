@@ -12,7 +12,7 @@ function get_analyze_page() {
             <p>Formula</p>
                 <form>
                     <div class = "write">
-                        <input type = "text" id = "analyze-formula" name = "formula" placeholder = "e.g H2O">
+                        <input type = "text" id = "analyze-formula" name = "formula" placeholder = "e.g H2O" required>
                     </div>
                     <div class = "buttons">
                         <input type = "submit" class = "submit" value = "Analyze">
@@ -61,28 +61,28 @@ function get_convert_page() {
         <div class = "convert">
             <div class = "enter">
                 <form>
-                    <div class = "write">
-                        <input type = "text" id = "convert-formula" placeholder = "e.g H2O">
-                    </div>
+                    <p>Formula</p>
+                    <input type = "text" id = "convert-formula" name = "formula" placeholder = "e.g H2O" required>
 
+                    <p>Value to convert</p>
                     <div class = "unit">
                         <div class = "toggle-unit">
-                            <input type = "radio" id = "convert-mol" name = "unit">
+                            <input type = "radio" id = "convert-mol" name = "unit" value = "mol">
                             <label for = "convert-mol">Mol</label>
 
-                            <input type = "radio" id = "convert-mass" name = "unit">
+                            <input type = "radio" id = "convert-mass" name = "unit" value = "mass" checked>
                             <label for = "convert-mass">Mass</label>
 
                             <div class = "slider"></div>
                         </div>
 
-                        <input class = "write-unit" type = "text" id = "convert-unit-count" name = "convert-count">
+                        <input class = "write-unit" type = "text" id = "convert-unit-count" name = "count" required>
 
                     </div>
 
                     <div class = "buttons">
                         <input class = "submit" type = "submit" value = "Convert">
-                        <input class = "submit" type = "button" value = "Clear">
+                        <input class = "clear" type = "button" value = "Clear">
                     </div>
                 </form>
             </div>
