@@ -126,6 +126,10 @@ function get_balance_page() {
             </div>
 
             <div class = "data">
+                <p class = "balance-equation-header">Entered Equation</p>
+                <p id = "balance-entered-equation" class = "balance-equation-text">X + Y -> X2Y</p>
+                <p class = "balance-equation-header">Balanced Equation</p>
+                <p id = "balance-balanced-equation" class = "balance-equation-text">2X + Y -> X2Y</p>
             </div>
         </div>
     `;
