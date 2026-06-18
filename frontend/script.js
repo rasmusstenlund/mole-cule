@@ -210,7 +210,33 @@ function get_empirical_page() {
 
 function get_limiting_page() {
     return `
-        <h1>Get limiting reactants and theoretical yields</h1>
+        <div class = "limiting">
+            <div class = "enter">
+                <p>Composition</p>
+                <div class = "equation-maker">
+                    <p>Reactants</p>
+                    <div class = "equation-side reactants-side">
+                        <input type = "text" class = "reactant-input">
+                        <input type = "button" id = "balance-add-reactant" class = "add-button" value = "+ Reactant">
+                    </div>
+                    <p class = "arrow">&#8594</p>
+                    <p>Products</p>
+                    <div class = "equation-side products-side">
+                        <input type = "text" class = "product-input">
+                        <input type = "button" id = "balance-add-product" class = "add-button" value = "+ Product">
+                    </div>
+                </div>
+                <div class = "buttons">
+                    <input type = "button" class = "submit-button" id = "balance-submit" value = "Balance">
+                    <input type = "button" class = "clear-button" id = "balance-clear" value = "Clear">
+                </div>
+
+                <div class = "buttons">
+                </div>
+            </div>
+            <div class = "data">
+            </div>
+        </div>
     `;
 }
 
