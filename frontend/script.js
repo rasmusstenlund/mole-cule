@@ -137,7 +137,42 @@ function get_balance_page() {
 
 function get_empirical_page() {
     return `
-        <h1>Get empirical formula from mass percents</h1>
+        <div class = "empirical">
+            <div class = "enter">
+                <div class = "composition-maker">
+                    <div class = "empirical-part">
+                        <input type = "text" class = "empirical-element">
+                        <span>:</span>
+                        <input type = "text" class = "empirical-mass_percentage">
+                    </div>
+                    <input type = "button" class = "add-button" id = "empirical-add-element" value = "+ Element">
+                </div>
+
+                <div class = "empirical-optional">
+                    <div class = "optional-molar-mass">
+                        <span>(Optional) Molar mass</span>
+                        <input type = "text" id = "molar-mass">
+                    </div>
+                    <div class = "optional-hydrate">
+                        <label class = "hydrate-container">Hydrate
+                            <input type = "checkbox" id = "empirical-hydrate-check">
+                            <span class = "checkmark"></span>
+                        </label>
+                    
+                        <div class = "optional-hydrate-data">
+                            <div class = "hydrate-mass">
+                                <span>Hydrate mass (Before burning)</span>
+                                <input type = "text" id = "empirical-hydrate-mass" required>
+                            </div>
+                            <div class = "anhydrous-mass">
+                                <span>Anhydrous mass (After burning)</span>
+                                <input type = "text" id = "empirical-anhydrous-mass" requred>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     `;
 }
 
