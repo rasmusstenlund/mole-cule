@@ -126,10 +126,15 @@ function get_balance_page() {
             </div>
 
             <div class = "data">
-                <p class = "balance-equation-header">Entered Equation</p>
-                <p id = "balance-entered-equation" class = "balance-equation-text">X + Y -> X2Y</p>
-                <p class = "balance-equation-header">Balanced Equation</p>
-                <p id = "balance-balanced-equation" class = "balance-equation-text">2X + Y -> X2Y</p>
+                <div class = "entered">
+                    <p class = "balance-equation-header">Entered Equation</p>
+                    <p id = "balance-entered-equation" class = "balance-equation-text">X + Y -> X2Y</p>
+                </div>
+
+                <div class = "balanced">
+                    <p class = "balance-equation-header">Balanced Equation</p>
+                    <p id = "balance-balanced-equation" class = "balance-equation-text">2X + Y -> X2Y</p>
+                </div>
             </div>
         </div>
     `;
@@ -180,6 +185,24 @@ function get_empirical_page() {
                     <input type = "button" class = "submit-button" id = "empirical-submit" value = "Get Empirical">
                     <input type = "button" class = "clear-button" id = "empirical-clear" value = "Clear">
                 </div>
+            </div>
+
+            <div class = "data">
+                <div class = "empirical-part">
+                    <p>Empirical</p>
+                    <div class = "empirical-data">
+                        <p id = "empirical-empirical-formula">XY</p>
+                        <p id = "empirical-empirical-mass">60 g/mol</p>
+                    </div>
+                </div>
+                <div class = "molecular-part">
+                    <p>Molecular</p>
+                    <div class = "molecular-data">
+                        <p id = "empirical-molecular-formula">X2Y2</p>
+                        <p id = "empirical-molecular-mass">120 g/mol</p>
+                    </div>
+                </div>
+                <p id = "empirical-warning">Warning: Entered molar mass doesn't match calculated</p>
             </div>
         </div>
     `;
