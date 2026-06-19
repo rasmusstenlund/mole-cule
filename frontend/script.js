@@ -226,15 +226,23 @@ function get_limiting_page() {
                         <input type = "button" id = "balance-add-product" class = "add-button" value = "+ Product">
                     </div>
                 </div>
-                <div class = "buttons">
-                    <input type = "button" class = "submit-button" id = "balance-submit" value = "Balance">
-                    <input type = "button" class = "clear-button" id = "balance-clear" value = "Clear">
+
+                <p>Reactants mol</p>
+                <div class = "reactants-mol-list">
+                    <div class = "reactant-mol">
+                        <span class = "reactant">X2</span>
+                        <span>:</span>
+                        <input type = "text" class = "mol" placeholder = "Mol">
+                    </div>
                 </div>
 
                 <div class = "buttons">
+                    <input type = "button" class = "submit-button" id = "limiting-submit" value = "Get Limiting">
+                    <input type = "button" class = "clear-button" id = "limiting-clear" value = "Clear">
                 </div>
             </div>
             <div class = "data">
+            
             </div>
         </div>
     `;

@@ -60,13 +60,13 @@ input[type = "text"] {
 }
 
 .submit-button {
-    width: clamp(70px, 25%, 350px);
+    width: clamp(100px, 25%, 350px);
     height: 45px;
     background-color: #4b4b64;
     border: 0px;
     color: white;
     transition-duration: 0.4s;
-    border-radius: 8px;
+    border-radius: 8px; 
 }
 
 .submit-button:hover {
@@ -549,7 +549,7 @@ input[type = "text"] {
 
 .empirical .enter {
     background-color: #1f1f22;
-    width: clamp(200px, 40vw, 40vw);
+    width: clamp(200px, 50vw, 50vw);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -764,19 +764,45 @@ input[type = "text"] {
 
 .limiting {
     display: flex;
+    justify-content: space-evenly;
+    padding-bottom: 20px;
     
 }
 
 .limiting .enter {
     background-color: #1f1f22;
-    border-radius: 0.8vw;
-    width: clamp(200px, 40vw, 40vw);
-    padding-bottom: 15px;
+    width: clamp(220px, 45vw, 45vw);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 15px;
 
+}
+
+.limiting .enter .reactants-mol-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
+    gap: 15px;
+    justify-content: center;
+    max-width: 440px;
+    width: 100%;
+}
+
+.limiting .enter .reactant-mol {
+    display: grid;
+    grid-template-columns: max-content auto max-content;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.limiting .enter .reactant-mol input {
+    height: 35px;
+    width: 70px;
 }
 
 .limiting .enter .buttons {
