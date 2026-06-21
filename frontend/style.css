@@ -789,25 +789,29 @@ input[type = "text"] {
 
 .limiting .enter .reactants-mol-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, max-content));
     justify-content: center;
-    max-width: 440px;
     width: 100%;
+    max-width: 420px;
+    row-gap: 10px;
 }
 
 .limiting .enter .reactant-mol {
-    display: grid;
-    grid-template-columns: max-content auto max-content;
+    display: flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
     white-space: nowrap;
+}
+
+.limiting .enter .reactant-mol .reactant {
+    width: 90px;
+    text-align: end;
 }
 
 .limiting .enter .reactant-mol input {
     height: 35px;
-    width: 70px;
+    width: 80px;
+    margin-right: 10px;
 }
 
 .limiting .enter .buttons {
@@ -846,11 +850,30 @@ input[type = "text"] {
 }
 
 .limiting .theo-yields-list, .limiting .excess-remnants-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, max-content));
     width: 100%;
+    max-width: 420px;
+    justify-content: center;
 }
+
+.limiting .data .theo-yield, .limiting .data .excess-remnant {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    align-items: center;
+}
+
+.limiting .data .theo-yield .product, .limiting .data .excess-remnant .reactant {
+    width: 90px;
+    text-align: end;
+}
+
+.limiting .data .theo-yield .count, .limiting .data .excess-remnant .count {
+    width: 90px;
+    text-align: start;
+}
+
 
 @media screen and (max-width: 440px) {
     .limiting {

@@ -256,9 +256,9 @@ function get_limiting_page() {
                     <h4>Theoretical Yields</h4>
                     <div class = "theo-yields-list">
                         <div class = "theo-yield">
-                            <span>XY</span>
+                            <p class = "product">XY</p>
                             <span>:</span>
-                            <span>3.5 Mol</span>
+                            <p class = "count">3.5 Mol</p>
                         </div>
                     </div>
                 </div>
@@ -267,15 +267,15 @@ function get_limiting_page() {
                     <h4>Excess Remnants</h4>
                     <div class = "excess-remnants-list">
                         <div class = "excess-remnant">
-                            <span>X2</span>
+                            <p class = "reactant">X2</p>
                             <span>:</span>
-                            <span>0 Mol</span>
+                            <p class = "count">0 Mol</p>
                         </div>
 
                         <div class = "excess-remnant">
-                            <span>Y</span>
+                            <span class = "reactant">Y</span>
                             <span>:</span>
-                            <span>0.4 Mol</span>
+                            <span class = "count">0.4 Mol</span>
                         </div>
                     </div>
                 </div>
