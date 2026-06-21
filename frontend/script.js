@@ -227,7 +227,7 @@ function get_limiting_page() {
                     </div>
                 </div>
 
-                <p>Reactants mol</p>
+                <p>Reactants Mol</p>
                 <div class = "reactants-mol-list">
                     <div class = "reactant-mol">
                         <span class = "reactant">X2</span>
