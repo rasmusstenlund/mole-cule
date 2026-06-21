@@ -88,12 +88,12 @@ function get_convert_page() {
 
                 <div class = "count-data">
                     <div class = "mol-data">
-                        <p>Mol</p>
+                        <h4>Mol</h4>
                         <p class = "data-mol">00.00</p>
                     </div>
 
                     <div class = "mass-data">
-                        <p>Mass (g)</p>
+                        <h4>Mass (g)</h4>
                         <p class = "data-mass">000.000</p>
                     </div>
                 </div>
@@ -127,12 +127,12 @@ function get_balance_page() {
 
             <div class = "data">
                 <div class = "entered">
-                    <p class = "balance-equation-header">Entered Equation</p>
+                    <h4 class = "balance-equation-header">Entered Equation</h4>
                     <p id = "balance-entered-equation" class = "balance-equation-text">X + Y -> X2Y</p>
                 </div>
 
                 <div class = "balanced">
-                    <p class = "balance-equation-header">Balanced Equation</p>
+                    <h4 class = "balance-equation-header">Balanced Equation</h4>
                     <p id = "balance-balanced-equation" class = "balance-equation-text">2X + Y -> X2Y</p>
                 </div>
             </div>
@@ -189,14 +189,14 @@ function get_empirical_page() {
 
             <div class = "data">
                 <div class = "empirical-part">
-                    <p>Empirical</p>
+                    <h4>Empirical</h4>
                     <div class = "empirical-data">
                         <p id = "empirical-empirical-formula">XY</p>
                         <p id = "empirical-empirical-mass">60 g/mol</p>
                     </div>
                 </div>
                 <div class = "molecular-part">
-                    <p>Molecular</p>
+                    <h4>Molecular</h4   >
                     <div class = "molecular-data">
                         <p id = "empirical-molecular-formula">X2Y2</p>
                         <p id = "empirical-molecular-mass">120 g/mol</p>
@@ -242,7 +242,43 @@ function get_limiting_page() {
                 </div>
             </div>
             <div class = "data">
-            
+                <div class = "equation">
+                    <h4>Equation</h4>
+                    <p id = "limiting-equation">X2 + 2Y -> 2XY</p>
+                </div>
+                
+                <div class = "limiting-reactant">
+                    <h4>Limiting Reactant</h4>
+                    <p id = "limiting-limiting-reactant">X2</p>
+                </div>
+
+                <div class = "theoretical">
+                    <h4>Theoretical Yields</h4>
+                    <div class = "theo-yields-list">
+                        <div class = "theo-yield">
+                            <span>XY</span>
+                            <span>:</span>
+                            <span>3.5 Mol</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class = "excess">
+                    <h4>Excess Remnants</h4>
+                    <div class = "excess-remnants-list">
+                        <div class = "excess-remnant">
+                            <span>X2</span>
+                            <span>:</span>
+                            <span>0 Mol</span>
+                        </div>
+
+                        <div class = "excess-remnant">
+                            <span>Y</span>
+                            <span>:</span>
+                            <span>0.4 Mol</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
