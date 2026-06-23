@@ -23,10 +23,20 @@ function router() {
     
     if (content_function) {
         app_container.innerHTML = content_function.page();
-        
-        
+
+        if (content_function.setup()) {
+            content_function.setup();
+        }
+    
     } else {
-        app_container.innerHTML = '<h1>404</h1><p>Page Not Found</p>'
+        app_container.innerHTML = `
+            <div class = "not-found">
+                <div class = "not-found-text">
+                    <h1>404</h1>
+                    <p>Page Not Found</p>
+                </div>
+            </div>
+        `
     }
 }
 

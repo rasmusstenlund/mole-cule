@@ -12,9 +12,9 @@ export function page() {
                 </div>
             </div>
             
-            <div class = "data">
+            <div class = "data hidden" id = "analyze-data">
                 <div class = "formula">
-                    <p>XY</p>
+                    <p id = "analyze-data-formula">XY</p>
                     <p class = "molar_mass">Molar mass: 000.000 g/mol</p>
                 </div>
 
@@ -41,8 +41,35 @@ export function page() {
                     <p class = "mobile">Total mass (u):</p> <p class = "value">000.000</p>
                     <p class = "mobile">Mass %:</p> <p class = "value">00.00</p>
                 </div>
-
             </div>
         </div>
     `
+}
+
+export function setup() {
+    const submit_button = document.getElementById("analyze-submit");
+    const clear_button = document.getElementById("analyze-clear");
+    const formula_input = document.getElementById("analyze-formula");
+
+    const data = document.getElementById("analyze-data");
+    const formula_output = document.getElementById("analyze-data-formula");
+
+
+
+    submit_button.addEventListener("click", function () {
+        var formula = formula_input.value;
+
+        if (formula) {
+            data.classList.remove("hidden")
+
+            formula_output.textContent = formula;
+        }
+    })
+
+    clear_button.addEventListener("click", function () {
+        formula_input.value = ""
+        
+        data.classList.add("hidden")
+    })
+
 }
