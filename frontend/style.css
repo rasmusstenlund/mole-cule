@@ -381,7 +381,7 @@ input[type = "text"] {
     cursor: pointer;
 }
 
-.convert .enter .unit .toggle-unit #convert-mol:checked ~ .slider {
+.convert .enter .unit .toggle-unit #convert-radio-mol:checked ~ .slider {
     transform: translateX(-111%);
 }
 

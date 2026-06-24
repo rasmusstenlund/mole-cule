@@ -51,16 +51,17 @@ export function setup() {
     const clear_button = document.getElementById("analyze-clear");
     const formula_input = document.getElementById("analyze-formula");
 
-    const data = document.getElementById("analyze-data");
+    const output = document.getElementById("analyze-data");
     const formula_output = document.getElementById("analyze-data-formula");
 
 
 
     submit_button.addEventListener("click", function () {
         var formula = formula_input.value;
+        formula = formula.trim()
 
         if (formula) {
-            data.classList.remove("hidden")
+            output.classList.remove("hidden")
 
             formula_output.textContent = formula;
         }
@@ -69,7 +70,7 @@ export function setup() {
     clear_button.addEventListener("click", function () {
         formula_input.value = ""
         
-        data.classList.add("hidden")
+        output.classList.add("hidden")
     })
 
 }
