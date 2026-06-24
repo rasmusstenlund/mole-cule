@@ -4,13 +4,13 @@ export function page() {
             <div class = "enter">
                 <div class = "equation-maker">
                     <p>Reactants</p>
-                    <div class = "equation-side reactants-side">
+                    <div class = "equation-side" id = "balance-reactants-side">
                         <input type = "text" class = "reactant-input">
                         <input type = "button" id = "balance-add-reactant" class = "add-button" value = "+ Reactant">
                     </div>
                     <p class = "arrow">&#8594</p>
                     <p>Products</p>
-                    <div class = "equation-side products-side">
+                    <div class = "equation-side" id = "balance-products-side">
                         <input type = "text" class = "product-input">
                         <input type = "button" id = "balance-add-product" class = "add-button" value = "+ Product">
                     </div>
@@ -34,4 +34,20 @@ export function page() {
             </div>
         </div>
     `
+}
+
+export function setup() {
+    const add_reactant = document.getElementById("balance-add-reactant");
+    const add_product = document.getElementById("balance-add-product");
+    const reactant_list = document.getElementById("balance-reactants-side");
+    const products_list = document.getElementById("balance-products-side");
+
+
+    add_reactant.addEventListener("click", function () {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.classList.add("reactant-input");
+
+        reactant_list.insertBefore(input, add_reactant);
+    })
 }
