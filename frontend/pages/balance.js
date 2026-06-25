@@ -40,52 +40,21 @@ export function page() {
     `
 }
 
+import {equation_buttons, equation_maker} from "../extra-functions.js"
+
 export function setup() {
     const add_reactant = document.getElementById("balance-add-reactant");
     const add_product = document.getElementById("balance-add-product");
     const reactants_list = document.getElementById("balance-reactants-side");
     const products_list = document.getElementById("balance-products-side");
 
-
-    add_reactant.addEventListener("click", function () {
-        const last_input = reactants_list.lastElementChild;
-        const plus = document.createElement("p");
-        plus.textContent = "+";
-
-        last_input.appendChild(plus)
-
-        const div = document.createElement("div");
-        div.classList.add("equation-part-container");
-
-        const input = document.createElement("input");
-        input.type = "text";
-        input.classList.add("reactant-input");
-
-        div.appendChild(input)
+    equation_buttons(reactants_list, add_reactant, products_list, add_product);
     
-        reactants_list.append(div)
-    })
-
-    add_product.addEventListener("click", function () {
-        const last_input = products_list.lastElementChild;
-        const plus = document.createElement("p");
-        plus.textContent = "+";
-        last_input.appendChild(plus);
-
-        const container = document.createElement("div");
-        container.classList.add("equation-part-container");
-        const input = document.createElement("input");
-        input.type = "text";
-        input.classList.add("product-input");
-        container.appendChild(input);
-
-        products_list.appendChild(container);
-    })
-
     const output = document.getElementById("balance-data")
     const submit_button = document.getElementById("balance-submit");
     const clear_button = document.getElementById("balance-clear");
     const entered = document.getElementById("balance-entered-equation");
+    const balanced = document.getElementById("balance-balanced-equation");
 
     clear_button.addEventListener("click", function () {
         const reactant_input = document.createElement("input");
@@ -114,47 +83,11 @@ export function setup() {
     })
 
     submit_button.addEventListener("click", function () {
-        const reactants = reactants_list.getElementsByClassName("reactant-input");
-        const products = products_list.getElementsByClassName("product-input");
-
-
-        let reactant_side = ""
-
-        for (let i = 0; i < reactants.length; i++) {
-            let reactant = reactants[i].value;
-            reactant = reactant.trim();
-
-            if (!reactant) {
-                continue
-            }
-
-            reactant_side += reactant;
-
-            if (i < (reactants.length - 1)) {
-                reactant_side += " + "
-            }
-        }
-
-        let product_side = ""
-
-        for (let i = 0; i < products.length; i++) {
-            let product = products[i].value;
-            product = product.trim();
-
-            if (!product) {
-                continue
-            }
-
-            product_side += product;
-
-            if (i < (products.length - 1)) {
-                product_side += " + "
-            }
-        }
-
-        if (reactant_side && product_side) {
-            entered.textContent = `${reactant_side} -> ${product_side}`;
-            output.classList.remove("hidden");
+        const equation = equation_maker(reactants_list, products_list)
+        if (equation) {
+            entered.textContent = equation;
+            balanced.textContent = "Calculating"
+            output.classList.remove("hidden")
         }
     })
 }
