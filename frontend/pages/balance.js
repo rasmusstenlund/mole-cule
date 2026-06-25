@@ -25,7 +25,7 @@ export function page() {
                 </div>
             </div>
 
-            <div class = "data">
+            <div class = "data hidden" id = "balance-data">
                 <div class = "entered">
                     <h4 class = "balance-equation-header">Entered Equation</h4>
                     <p id = "balance-entered-equation" class = "balance-equation-text">X + Y -> X2Y</p>
@@ -70,7 +70,7 @@ export function setup() {
         const last_input = products_list.lastElementChild;
         const plus = document.createElement("p");
         plus.textContent = "+";
-        last_input.appendChild(plus)
+        last_input.appendChild(plus);
 
         const container = document.createElement("div");
         container.classList.add("equation-part-container");
@@ -80,5 +80,81 @@ export function setup() {
         container.appendChild(input);
 
         products_list.appendChild(container);
+    })
+
+    const output = document.getElementById("balance-data")
+    const submit_button = document.getElementById("balance-submit");
+    const clear_button = document.getElementById("balance-clear");
+    const entered = document.getElementById("balance-entered-equation");
+
+    clear_button.addEventListener("click", function () {
+        const reactant_input = document.createElement("input");
+        reactant_input.type = "text";
+        reactant_input.classList.add("reactant-input");
+
+        const reactant_container = document.createElement("div");
+        reactant_container.classList.add("equation-part-container");
+        reactant_container.appendChild(reactant_input);
+
+        reactants_list.innerHTML = "";
+        reactants_list.appendChild(reactant_container);
+
+        const product_input = document.createElement("input");
+        product_input.type = "text";
+        product_input.classList.add("product-input");
+
+        const product_container = document.createElement("div");
+        product_container.classList.add("equation-part-container");
+        product_container.appendChild(product_input);
+
+        products_list.innerHTML = "";
+        products_list.appendChild(product_container);
+
+        output.classList.add("hidden");
+    })
+
+    submit_button.addEventListener("click", function () {
+        const reactants = reactants_list.getElementsByClassName("reactant-input");
+        const products = products_list.getElementsByClassName("product-input");
+
+
+        let reactant_side = ""
+
+        for (let i = 0; i < reactants.length; i++) {
+            let reactant = reactants[i].value;
+            reactant = reactant.trim();
+
+            if (!reactant) {
+                continue
+            }
+
+            reactant_side += reactant;
+
+            if (i < (reactants.length - 1)) {
+                reactant_side += " + "
+            }
+        }
+
+        let product_side = ""
+
+        for (let i = 0; i < products.length; i++) {
+            let product = products[i].value;
+            product = product.trim();
+
+            if (!product) {
+                continue
+            }
+
+            product_side += product;
+
+            if (i < (products.length - 1)) {
+                product_side += " + "
+            }
+        }
+
+        if (reactant_side && product_side) {
+            entered.textContent = `${reactant_side} -> ${product_side}`;
+            output.classList.remove("hidden");
+        }
     })
 }

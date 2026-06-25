@@ -481,7 +481,7 @@ input[type = "text"] {
 .balance .enter {
     background-color: #1f1f22;
     border-radius: 0.8vw;
-    width: clamp(200px, 40vw, 40vw);
+    width: clamp(200px, 50vw, 50vw);
     padding-bottom: 20px;
     padding-top: 20px;
     display: flex;
