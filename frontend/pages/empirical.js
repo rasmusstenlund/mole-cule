@@ -53,7 +53,7 @@ export function page() {
                         <p id = "empirical-empirical-mass">60 g/mol</p>
                     </div>
                 </div>
-                <div class = "molecular-part">
+                <div class = "molecular-part hidden" id = "empirical-molecular">
                     <h4>Molecular</h4>
                     <div class = "molecular-data">
                         <p id = "empirical-molecular-formula">X2Y2</p>
@@ -93,6 +93,28 @@ function create_empirical_part(empirical_list) {
     }, 10)
 }
 
+function make_composition(empirical_list) {
+    var composition = {}
+    for (const empirical_part of empirical_list) {
+        const element = empirical_part.querySelector(".empirical-element").value.trim();
+        const percent = empirical_part.querySelector(".empirical-mass-percentage").value.trim();
+
+        if (element && isFinite(percent)) {
+            composition[element] = percent
+        } else if (!(element) && !(percent)) {
+            continue
+        } else {
+            return false;
+        }
+    }
+
+    if (composition) {
+        return composition;
+    } else {
+        return false;
+    }
+}
+
 export function setup() {
     const empirical_list = document.getElementById("empirical-part-list");
     const add_element = document.getElementById("empirical-add-element");
@@ -109,27 +131,30 @@ export function setup() {
     const output = document.getElementById("empirical-data");
     const check = document.getElementById("empirical-hydrate-check");
     const molar_mass_input = document.getElementById("empirical-molar-mass");
+    const empirical_output = document.getElementById("empirical-empirical");
+    const molecular_output = document.getElementById("empirical-molecular")
 
     clear_button.addEventListener("click", function () {
         empirical_list.innerHTML = "";
         create_empirical_part(empirical_list);
         output.classList.add("hidden");
         check.checked = false;
-
     })
 
     submit_button.addEventListener("click", function () {
-        const molar_mass = molar_mass_input.value.trim();
+        const molar_mass = molar_mass_input.value;
 
-        if (molar_mass) {
-            if (isFinite(molar_mass)) {
-
+        const composition = make_composition(empirical_list);
+        if (composition) {
+            molecular_output.classList.add("hidden")
+            if (molar_mass) {
+                if (isFinite(molar_mass)) {
+                    molecular_output.classList.remove("hidden");
+                }
             }
+
+            output.classList.remove("hidden");
         }
-        else {
-            
-        }
-        output.classList.remove("hidden");
     })
 
 }
