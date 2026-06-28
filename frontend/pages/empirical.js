@@ -60,7 +60,7 @@ export function page() {
                         <p id = "empirical-molecular-mass">120 g/mol</p>
                     </div>
                 </div>
-                <p id = "empirical-warning">Warning: Entered molar mass doesn't match calculated</p>
+                <p class = "hidden" id = "empirical-warning">Warning: Entered molar mass doesn't match calculated</p>
             </div>
         </div>
     `
@@ -95,12 +95,12 @@ function create_empirical_part(empirical_list) {
 
 function make_composition(empirical_list) {
     var composition = {}
-    for (const empirical_part of empirical_list) {
+    for (const empirical_part of empirical_list.children) {
         const element = empirical_part.querySelector(".empirical-element").value.trim();
         const percent = empirical_part.querySelector(".empirical-mass-percentage").value.trim();
 
-        if (element && isFinite(percent)) {
-            composition[element] = percent
+        if (element && isFinite(percent) && percent !== "") {
+            composition[element] = parseFloat(percent)
         } else if (!(element) && !(percent)) {
             continue
         } else {
@@ -108,11 +108,11 @@ function make_composition(empirical_list) {
         }
     }
 
-    if (composition) {
-        return composition;
-    } else {
+    if (Object.keys(composition).length == 0) {
         return false;
     }
+
+    return composition;
 }
 
 export function setup() {
@@ -123,16 +123,27 @@ export function setup() {
         create_empirical_part(empirical_list);
     })
 
-    empirical_list.addEventListener("input", function () {
-    })
-
     const submit_button = document.getElementById("empirical-submit");
     const clear_button = document.getElementById("empirical-clear");
     const output = document.getElementById("empirical-data");
     const check = document.getElementById("empirical-hydrate-check");
     const molar_mass_input = document.getElementById("empirical-molar-mass");
+
+    const hydrate_mass_input = document.getElementById("empirical-hydrate-mass");
+    const anhydrous_mass_input = document.getElementById("empirical-anhydrous-mass");
+
     const empirical_output = document.getElementById("empirical-empirical");
-    const molecular_output = document.getElementById("empirical-molecular")
+    const empirical_formula = document.getElementById("empirical-empirical-formula");
+    const empirical_mass = document.getElementById("empirical-empirical-mass");
+
+    const molecular_output = document.getElementById("empirical-molecular");
+    const molecular_formula = document.getElementById("empirical-molecular-formula");
+    const molecular_mass = document.getElementById("empirical-molecular-mass");
+
+    check.addEventListener("change", function () {
+        hydrate_mass_input.value = "";
+        anhydrous_mass_input.value = "";
+    })
 
     clear_button.addEventListener("click", function () {
         empirical_list.innerHTML = "";
@@ -142,18 +153,42 @@ export function setup() {
     })
 
     submit_button.addEventListener("click", function () {
-        const molar_mass = molar_mass_input.value;
+        var molecular = false;
+        const molar_mass = molar_mass_input.value.trim();
 
         const composition = make_composition(empirical_list);
         if (composition) {
-            molecular_output.classList.add("hidden")
             if (molar_mass) {
                 if (isFinite(molar_mass)) {
+                    molecular = true
                     molecular_output.classList.remove("hidden");
                 }
-            }
+            } else {
+                molecular_output.classList.add("hidden");
+            };
 
-            output.classList.remove("hidden");
+            if (check.checked) {
+                const hydrate_mass = hydrate_mass_input.value.trim();
+                const anhydrous_mass = anhydrous_mass_input.value.trim();
+                if (isFinite(hydrate_mass) && hydrate_mass !== "" && isFinite(anhydrous_mass) && anhydrous_mass !== "") {
+                    if (molecular) {
+                    molecular_formula.textContent = "Calculating hydrate";
+                    molecular_mass.textContent = "Calculating hydrate";
+                }
+                empirical_formula.textContent = "Calculating hydrate";
+                empirical_mass.textContent = "Calculating hydrate";
+
+                    output.classList.remove("hidden")
+                }
+            } else {
+                if (molecular) {
+                    molecular_formula.textContent = "Calculating";
+                    molecular_mass.textContent = "Calculating";
+                }
+                empirical_formula.textContent = "Calculating";
+                empirical_mass.textContent = "Calculating";
+                output.classList.remove("hidden")
+            };
         }
     })
 
