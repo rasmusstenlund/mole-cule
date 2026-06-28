@@ -6,7 +6,7 @@ export function page() {
                     <p>Reactants</p>
                     <div class = "equation-side" id = "balance-reactants-side">
                         <div class = "equation-part-container">
-                            <input type = "text" class = "reactant-input">
+                            <input type = "text" class = "reactant-input" placeholder = "Reactant">
                         </div>
                     </div>
                     <input type = "button" id = "balance-add-reactant" class = "add-button" value = "+ Reactant">
@@ -14,7 +14,7 @@ export function page() {
                     <p>Products</p>
                     <div class = "equation-side" id = "balance-products-side">
                         <div class = "equation-part-container">
-                            <input type = "text" class = "product-input">
+                            <input type = "text" class = "product-input" placeholder = "Product">
                         </div>
                     </div>
                     <input type = "button" id = "balance-add-product" class = "add-button" value = "+ Product">

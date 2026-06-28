@@ -12,6 +12,7 @@ export function equation_buttons(reactants_list, add_reactant, products_list, ad
         const input = document.createElement("input");
         input.type = "text";
         input.classList.add("reactant-input");
+        input.placeholder = "Reactant";
 
         div.appendChild(input)
     
@@ -29,6 +30,8 @@ export function equation_buttons(reactants_list, add_reactant, products_list, ad
         const input = document.createElement("input");
         input.type = "text";
         input.classList.add("product-input");
+        input.placeholder = "Product";
+
         container.appendChild(input);
 
         products_list.appendChild(container);

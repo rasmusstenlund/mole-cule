@@ -573,13 +573,13 @@ input[type = "text"] {
     gap: 15px;
 }
 
-.empirical .empirical-part-list {
+#empirical-part-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, max-content)); 
-    gap: 15px;
+    gap: 25px;
     justify-content: center;
     width: 100%;
-    max-width: 580px;
+    max-width: 600px;
 }
 
 .empirical .empirical-part {
@@ -588,6 +588,17 @@ input[type = "text"] {
     justify-content: center;
     gap: 3px;
     flex-shrink: 0;
+}
+
+.empirical .enter .empirical-part {
+    opacity: 0;
+    transition: 0.25s;
+    transform: translateY(-7px);
+}
+
+.empirical .enter .empirical-part.show {
+    opacity: 1;
+    transform: translateY(0)
 }
 
 .empirical .empirical-part input {

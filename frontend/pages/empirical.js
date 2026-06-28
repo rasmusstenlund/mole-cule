@@ -4,11 +4,11 @@ export function page() {
             <div class = "enter">
                 <p>Composition</p>
                 <div class = "composition-maker">
-                    <div class = "empirical-part-list">
-                        <div class = "empirical-part">
+                    <div id = "empirical-part-list">
+                        <div class = "empirical-part show">
                             <input type = "text" class = "empirical-element" placeholder = "Element">
-                            <span>:</span>
-                            <input type = "text" class = "empirical-mass_percentage" placeholder = "Mass %">
+                            <p>:</p>
+                            <input type = "text" class = "empirical-mass-percentage" placeholder = "Mass %">
                         </div>
                     </div>
 
@@ -18,7 +18,7 @@ export function page() {
                 <div class = "empirical-optional">
                     <div class = "optional-molar-mass">
                         <p>(Optional) Molar mass</p>
-                        <input type = "text" id = "molar-mass">
+                        <input type = "text" id = "empirical-molar-mass">
                     </div>
                     <div class = "optional-hydrate">
                         <label class = "hydrate-container">Is Hydrate?
@@ -29,11 +29,11 @@ export function page() {
                         <div class = "optional-hydrate-data">
                             <div class = "hydrate-mass">
                                 <p>Hydrate mass (Before burning)</p>
-                                <input type = "text" id = "empirical-hydrate-mass" required>
+                                <input type = "text" id = "empirical-hydrate-mass" placeholder = "(g)">
                             </div>
                             <div class = "anhydrous-mass">
                                 <p>Anhydrous mass (After burning)</p>
-                                <input type = "text" id = "empirical-anhydrous-mass" required>
+                                <input type = "text" id = "empirical-anhydrous-mass" placeholder = "(g)">
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@ export function page() {
                 </div>
             </div>
 
-            <div class = "data">
+            <div class = "data hidden" id = "empirical-data">
                 <div class = "empirical-part">
                     <h4>Empirical</h4>
                     <div class = "empirical-data">
@@ -54,7 +54,7 @@ export function page() {
                     </div>
                 </div>
                 <div class = "molecular-part">
-                    <h4>Molecular</h4   >
+                    <h4>Molecular</h4>
                     <div class = "molecular-data">
                         <p id = "empirical-molecular-formula">X2Y2</p>
                         <p id = "empirical-molecular-mass">120 g/mol</p>
@@ -64,4 +64,72 @@ export function page() {
             </div>
         </div>
     `
+}
+
+function create_empirical_part(empirical_list) {
+    const element_input = document.createElement("input");
+    element_input.type = "text";
+    element_input.classList.add("empirical-element");
+    element_input.placeholder = "Element";
+
+    const colon = document.createElement("p");
+    colon.textContent = ":"
+
+    const percent_input = document.createElement("input");
+    percent_input.type = "text";
+    percent_input.classList.add("empirical-mass-percentage");
+    percent_input.placeholder = "Mass %";
+
+    const element_part = document.createElement("div");
+    element_part.classList.add("empirical-part");
+    element_part.appendChild(element_input);
+    element_part.appendChild(colon);
+    element_part.appendChild(percent_input);
+
+    empirical_list.appendChild(element_part)
+
+    setTimeout(function () {
+        element_part.classList.add("show")
+    }, 10)
+}
+
+export function setup() {
+    const empirical_list = document.getElementById("empirical-part-list");
+    const add_element = document.getElementById("empirical-add-element");
+
+    add_element.addEventListener("click", function () {
+        create_empirical_part(empirical_list);
+    })
+
+    empirical_list.addEventListener("input", function () {
+    })
+
+    const submit_button = document.getElementById("empirical-submit");
+    const clear_button = document.getElementById("empirical-clear");
+    const output = document.getElementById("empirical-data");
+    const check = document.getElementById("empirical-hydrate-check");
+    const molar_mass_input = document.getElementById("empirical-molar-mass");
+
+    clear_button.addEventListener("click", function () {
+        empirical_list.innerHTML = "";
+        create_empirical_part(empirical_list);
+        output.classList.add("hidden");
+        check.checked = false;
+
+    })
+
+    submit_button.addEventListener("click", function () {
+        const molar_mass = molar_mass_input.value.trim();
+
+        if (molar_mass) {
+            if (isFinite(molar_mass)) {
+
+            }
+        }
+        else {
+            
+        }
+        output.classList.remove("hidden");
+    })
+
 }
