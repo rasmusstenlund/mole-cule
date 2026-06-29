@@ -75,41 +75,67 @@ export function page() {
 
 function mol_input_maker(reactants_list, mol_div) {
     const reactant_inputs = reactants_list.querySelectorAll(".reactant-input");
-    
+    const mol_list = mol_div.querySelectorAll(".reactant-mol")
 
     for (let i = 0; i < reactant_inputs.length; i++) {
-        const mol_list = mol_div.querySelectorAll(".reactant-mol")
-        if (!(mol_list[i])) {
-            const reactant_mol = document.createElement("div");
-            reactant_mol.classList.add("reactant-mol");
+        let current_row = mol_list[i];
+
+        if (!(current_row)) {
+            current_row = document.createElement("div");
+            current_row.classList.add("reactant-mol");
 
             const reactant = document.createElement("p");
             reactant.classList.add("reactant");
-            reactant_mol.appendChild(reactant);
+            current_row.appendChild(reactant);
 
             const colon = document.createElement("p");
             colon.textContent = ":";
-            reactant_mol.appendChild(colon);
+            current_row.appendChild(colon);
 
             const input = document.createElement("input");
             input.type = "text";
             input.classList.add("mol");
             input.placeholder = "Mol";
-            reactant_mol.appendChild(input);
+            current_row.appendChild(input);
 
-            mol_div.appendChild(reactant_mol);
+            mol_div.appendChild(current_row);
         }
+        
 
-        const input_reactant = mol_list[i].querySelector(".reactant");
+        const input_reactant = current_row.querySelector(".reactant");
 
         input_reactant.textContent = reactant_inputs[i].value.trim();
 
         if (input_reactant.textContent === "") {
-            mol_list[i].classList.add("hidden")
+            current_row.classList.add("hidden")
         } else {
-            mol_list[i].classList.remove("hidden");
+            current_row.classList.remove("hidden");
         }
     }
+}
+
+function get_mol_dict(mol_div) {
+    var mol_dict = {}
+    const mol_list = mol_div.querySelectorAll(".reactant-mol")
+    
+    for (let i = 0; i < mol_list.length; i++) {
+        const current_mol_div = mol_list[i];
+
+        if (current_mol_div.classList.contains("hidden")) {
+            continue
+        };
+
+        const reactant = current_mol_div.querySelector(".reactant").textContent;
+        const mol = current_mol_div.querySelector(".mol").value.trim();
+
+        if (isFinite(mol) && mol !== "") {
+            mol_dict[reactant] = mol;
+        } else {
+            return false;
+        }
+    }
+
+    return mol_dict;
 }
 
 import {equation_buttons, equation_maker} from "../extra-functions.js";
@@ -156,8 +182,18 @@ export function setup() {
         products_list.innerHTML = "";
         products_list.appendChild(product_container);
 
+        mol_list.innerHTML = "";
+        mol_input_maker(reactants_list, mol_list);
+
         output.classList.add("hidden");
     })
 
-    submit_button.addEventListener
+    submit_button.addEventListener("click", function () {
+        const equation = equation_maker(reactants_list, products_list);
+        const mol_dict = get_mol_dict(mol_list);
+
+        if (equation && mol_dict) {
+            output.classList.remove("hidden");
+        }
+    })
 }
