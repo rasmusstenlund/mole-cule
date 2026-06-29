@@ -59,6 +59,7 @@ export function setup() {
     clear_button.addEventListener("click", function () {
         const reactant_input = document.createElement("input");
         reactant_input.type = "text";
+        reactant_input.placeholder = "Reactant";
         reactant_input.classList.add("reactant-input");
 
         const reactant_container = document.createElement("div");
@@ -70,6 +71,7 @@ export function setup() {
 
         const product_input = document.createElement("input");
         product_input.type = "text";
+        product_input.placeholder = "Product";
         product_input.classList.add("product-input");
 
         const product_container = document.createElement("div");

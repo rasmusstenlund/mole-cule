@@ -5,25 +5,24 @@ export function page() {
                 <p>Composition</p>
                 <div class = "equation-maker">
                     <p>Reactants</p>
-                    <div class = "equation-side reactants-side">
-                        <input type = "text" class = "reactant-input">
-                        <input type = "button" id = "balance-add-reactant" class = "add-button" value = "+ Reactant">
+                    <div class = "equation-side" id = "limiting-reactants-side">
+                        <div class = "equation-part-container">
+                            <input type = "text" class = "reactant-input" placeholder = "Reactant">
+                        </div>
                     </div>
+                    <input type = "button" id = "limiting-add-reactant" class = "add-button" value = "+ Reactant">
                     <p class = "arrow">&#8594</p>
                     <p>Products</p>
-                    <div class = "equation-side products-side">
-                        <input type = "text" class = "product-input">
-                        <input type = "button" id = "balance-add-product" class = "add-button" value = "+ Product">
+                    <div class = "equation-side" id = "limiting-products-side">
+                        <div class = "equation-part-container">
+                            <input type = "text" class = "product-input" placeholder = "Product">
+                        </div>
                     </div>
+                    <input type = "button" id = "limiting-add-product" class = "add-button" value = "+ Product">
                 </div>
 
                 <p>Reactants Mol</p>
-                <div class = "reactants-mol-list">
-                    <div class = "reactant-mol">
-                        <span class = "reactant">X2</span>
-                        <span>:</span>
-                        <input type = "text" class = "mol" placeholder = "Mol">
-                    </div>
+                <div class = "reactants-mol-list"" id = "limiting-mol-list">
                 </div>
 
                 <div class = "buttons">
@@ -31,7 +30,7 @@ export function page() {
                     <input type = "button" class = "clear-button" id = "limiting-clear" value = "Clear">
                 </div>
             </div>
-            <div class = "data">
+            <div class = "data hidden" id = "limiting-data">
                 <div class = "equation">
                     <h4>Equation</h4>
                     <p id = "limiting-equation">X2 + 2Y -> 2XY</p>
@@ -72,4 +71,93 @@ export function page() {
             </div>
         </div>
     `
+}
+
+function mol_input_maker(reactants_list, mol_div) {
+    const reactant_inputs = reactants_list.querySelectorAll(".reactant-input");
+    
+
+    for (let i = 0; i < reactant_inputs.length; i++) {
+        const mol_list = mol_div.querySelectorAll(".reactant-mol")
+        if (!(mol_list[i])) {
+            const reactant_mol = document.createElement("div");
+            reactant_mol.classList.add("reactant-mol");
+
+            const reactant = document.createElement("p");
+            reactant.classList.add("reactant");
+            reactant_mol.appendChild(reactant);
+
+            const colon = document.createElement("p");
+            colon.textContent = ":";
+            reactant_mol.appendChild(colon);
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.classList.add("mol");
+            input.placeholder = "Mol";
+            reactant_mol.appendChild(input);
+
+            mol_div.appendChild(reactant_mol);
+        }
+
+        const input_reactant = mol_list[i].querySelector(".reactant");
+
+        input_reactant.textContent = reactant_inputs[i].value.trim();
+
+        if (input_reactant.textContent === "") {
+            mol_list[i].classList.add("hidden")
+        } else {
+            mol_list[i].classList.remove("hidden");
+        }
+    }
+}
+
+import {equation_buttons, equation_maker} from "../extra-functions.js";
+
+export function setup() {
+    const add_reactant = document.getElementById("limiting-add-reactant");
+    const add_product = document.getElementById("limiting-add-product");
+    const reactants_list = document.getElementById("limiting-reactants-side");
+    const products_list = document.getElementById("limiting-products-side");
+    const mol_list = document.getElementById("limiting-mol-list")
+
+    equation_buttons(reactants_list, add_reactant, products_list, add_product);
+
+    reactants_list.addEventListener("input", function () {
+        mol_input_maker(reactants_list, mol_list)
+    })
+
+    const submit_button = document.getElementById("limiting-submit");
+    const clear_button = document.getElementById("limiting-clear");
+    const output = document.getElementById("limiting-data")
+
+    clear_button.addEventListener("click", function () {
+        const reactant_input = document.createElement("input");
+        reactant_input.type = "text";
+        reactant_input.placeholder = "Reactant";
+        reactant_input.classList.add("reactant-input");
+
+        const reactant_container = document.createElement("div");
+        reactant_container.classList.add("equation-part-container");
+        reactant_container.appendChild(reactant_input);
+
+        reactants_list.innerHTML = "";
+        reactants_list.appendChild(reactant_container);
+
+        const product_input = document.createElement("input");
+        product_input.type = "text";
+        product_input.placeholder = "Product";
+        product_input.classList.add("product-input");
+
+        const product_container = document.createElement("div");
+        product_container.classList.add("equation-part-container");
+        product_container.appendChild(product_input);
+
+        products_list.innerHTML = "";
+        products_list.appendChild(product_container);
+
+        output.classList.add("hidden");
+    })
+
+    submit_button.addEventListener
 }
