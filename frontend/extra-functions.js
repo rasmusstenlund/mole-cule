@@ -1,3 +1,17 @@
+const url = "http://127.0.0.1:8000";
+
+export async function call_api(dict, endpoint) {
+    const response = await fetch(`${url}${endpoint}`, {
+        method: "POST",
+        body: JSON.stringify(dict),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    return await response.json()
+}
+
 export function equation_buttons(reactants_list, add_reactant, products_list, add_product) {
     add_reactant.addEventListener("click", function () {
         const last_input = reactants_list.lastElementChild;

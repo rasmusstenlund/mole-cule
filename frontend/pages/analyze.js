@@ -15,7 +15,7 @@ export function page() {
             <div class = "data hidden" id = "analyze-data">
                 <div class = "formula">
                     <p id = "analyze-data-formula">XY</p>
-                    <p class = "molar_mass">Molar mass: 000.000 g/mol</p>
+                    <p class = "molar_mass" id = "analyze-molar-mass">Molar mass: 000.000 g/mol</p>
                 </div>
 
                 <div class = "desktop">
@@ -46,6 +46,8 @@ export function page() {
     `
 }
 
+import {call_api} from "../extra-functions.js"
+
 export function setup() {
     const submit_button = document.getElementById("analyze-submit");
     const clear_button = document.getElementById("analyze-clear");
@@ -53,14 +55,21 @@ export function setup() {
 
     const output = document.getElementById("analyze-data");
     const formula_output = document.getElementById("analyze-data-formula");
+    const mol_mass = document.getElementById("analyze-molar-mass")
 
 
 
-    submit_button.addEventListener("click", function () {
+    submit_button.addEventListener("click", async function () {
         var formula = formula_input.value;
         formula = formula.trim()
 
         if (formula) {
+            var dict = {};
+            dict["formula"] = formula;
+            const response = await call_api(dict, "/analyze");
+
+            mol_mass.textContent = response["molar_mass"];
+
             output.classList.remove("hidden")
 
             formula_output.textContent = formula;

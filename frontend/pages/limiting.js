@@ -54,7 +54,7 @@ export function page() {
 
                 <div class = "excess">
                     <h4>Excess Remnants</h4>
-                    <div class = "excess-remnants-list">
+                    <div class = "excess-remnants-list" id = "limiting-excess-remnants">
                         <div class = "excess-remnant">
                             <p class = "reactant">X2</p>
                             <span>:</span>
@@ -156,6 +156,7 @@ export function setup() {
     const submit_button = document.getElementById("limiting-submit");
     const clear_button = document.getElementById("limiting-clear");
     const output = document.getElementById("limiting-data")
+    const excess_remnants = document.getElementById("limiting-excess-remnants")
 
     clear_button.addEventListener("click", function () {
         const reactant_input = document.createElement("input");
@@ -193,6 +194,7 @@ export function setup() {
         const mol_dict = get_mol_dict(mol_list);
 
         if (equation && mol_dict) {
+            excess_remnants.innerHTML = ""
             output.classList.remove("hidden");
         }
     })
